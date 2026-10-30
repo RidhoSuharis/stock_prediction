@@ -1,0 +1,170 @@
+
+{% extends "base.html" %}
+
+{% block title %}Hasil Prediksi | Prediksi Saham{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/result_style.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="result-page">
+
+    <!-- Header -->
+    <section class="result-header">
+        <div class="result-header-text">
+            <span class="section-label">HASIL ANALISIS</span>
+            <h1>Hasil Prediksi Saham</h1>
+            <p>
+                Berikut adalah hasil prediksi harga penutupan saham
+                menggunakan model Bi-LSTM.
+            </p>
+        </div>
+
+        <div class="result-model">
+            <span>Model</span>
+            <strong>Bi-LSTM</strong>
+        </div>
+    </section>
+
+    <!-- Informasi prediksi -->
+    <section class="result-info">
+        <div class="result-info-card">
+            <span>Kode Saham</span>
+            <strong>ANTM</strong>
+        </div>
+
+        <div class="result-info-card">
+            <span>Periode Data</span>
+            <strong>Ilustrasi</strong>
+        </div>
+
+        <div class="result-info-card">
+            <span>Horizon Prediksi</span>
+            <strong>5 Hari</strong>
+        </div>
+
+        <div class="result-info-card">
+            <span>Variabel</span>
+            <strong>Close</strong>
+        </div>
+    </section>
+
+    <!-- Ringkasan hasil -->
+    <section class="result-summary">
+        <div class="result-summary-card">
+            <span>Harga Terakhir</span>
+            <h2>Rp 1.500</h2>
+            <small>Contoh nilai</small>
+        </div>
+
+        <div class="result-summary-card">
+            <span>Prediksi Hari ke-5</span>
+            <h2>Rp 1.560</h2>
+            <small>Contoh nilai</small>
+        </div>
+
+        <div class="result-summary-card">
+            <span>Perubahan</span>
+            <h2>+4,00%</h2>
+            <small>Ilustrasi, bukan rekomendasi investasi</small>
+        </div>
+    </section>
+
+    <!-- Grafik -->
+    <section class="result-section">
+        <div class="result-section-heading">
+            <div>
+                <h2>Grafik Harga Saham</h2>
+                <p>
+                    Contoh visualisasi harga aktual dan hasil prediksi.
+                </p>
+            </div>
+        </div>
+
+        <div class="result-chart-placeholder">
+            <div class="chart-placeholder-content">
+                <strong>Grafik Prediksi</strong>
+                <p>
+                    Grafik harga aktual dan prediksi akan ditampilkan
+                    di bagian ini setelah backend terhubung.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tabel prediksi -->
+    <section class="result-section">
+        <div class="result-section-heading">
+            <div>
+                <h2>Rincian Hasil Prediksi</h2>
+                <p>
+                    Contoh tabel untuk lima hari perdagangan berikutnya.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="result-table">
+                <thead>
+                    <tr>
+                        <th>Hari</th>
+                        <th>Tanggal</th>
+                        <th>Prediksi Close</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Hari perdagangan berikutnya</td>
+                        <td>Rp 1.520</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Hari perdagangan ke-2</td>
+                        <td>Rp 1.535</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Hari perdagangan ke-3</td>
+                        <td>Rp 1.545</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Hari perdagangan ke-4</td>
+                        <td>Rp 1.550</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Hari perdagangan ke-5</td>
+                        <td>Rp 1.560</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p class="result-note">
+            Catatan: seluruh angka pada halaman ini hanya ilustrasi,
+            bukan hasil model dan bukan saran untuk membeli atau
+            menjual saham.
+        </p>
+    </section>
+
+    <!-- Tombol -->
+    <section class="result-actions">
+        <a href="{{ url_for('prediction') }}"
+           class="result-btn result-btn-outline">
+            Kembali ke Prediksi
+        </a>
+
+        <button class="result-btn result-btn-primary"
+                type="button"
+                disabled>
+            Unduh Hasil (akan tersedia)
+        </button>
+    </section>
+
+</div>
+{% endblock %}
