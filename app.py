@@ -1,7 +1,10 @@
 
 from flask import Flask, render_template
 
-app = Flask(__name__)
+# Aset statis disimpan di `public/static` agar dapat disajikan langsung oleh
+# Vercel dari CDN, sementara Flask tetap menyajikannya pada path `/static/*`
+# ketika dijalankan lokal.
+app = Flask(__name__, static_folder="public/static")
 
 @app.route("/")
 def index():
