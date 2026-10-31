@@ -1,12 +1,24 @@
+from __future__ import annotations
+
+from typing import Protocol, TypeVar
 
 import pandas as pd
 
 
-def validate_uploaded_file(file):
+class UploadedFile(Protocol):
+    filename: str | None
+
+
+_FileT = TypeVar("_FileT", bound=UploadedFile)
+
+
+def validate_uploaded_file(
+    file: _FileT | None,
+) -> tuple[_FileT | None, str | None]:
     """
     Memeriksa keberadaan file dan ekstensi CSV.
     """
-    if file is None or file.filename == "":
+    if file is None or not file.filename:
         return None, "Silakan pilih file terlebih dahulu."
 
     filename = file.filename.strip()
@@ -22,21 +34,19 @@ def validate_uploaded_file(file):
     return file, None
 
 
-def validate_csv_columns(df):
+def validate_csv_columns(
+    df: pd.DataFrame,
+) -> tuple[bool, str | None]:
     """
     Memeriksa apakah CSV memiliki kolom Date dan Close.
     """
-    required_columns = ["Date", "Close"]
+    required_columns: list[str] = ["Date", "Close"]
 
-    missing_columns = [
-        column for column in required_columns
-        if column not in df.columns
+    missing_columns: list[str] = [
+        column for column in required_columns if column not in df.columns
     ]
 
     if missing_columns:
-        return False, (
-            "Kolom berikut tidak ditemukan: "
-            + ", ".join(missing_columns)
-        )
+        return False, ("Kolom berikut tidak ditemukan: " + ", ".join(missing_columns))
 
     return True, None

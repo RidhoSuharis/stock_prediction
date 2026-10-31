@@ -1,170 +1,163 @@
-
 {% extends "base.html" %}
+{% from "components/icon.html" import icon %}
+{% from "components/macros.html" import badge, info_row %}
 
 {% block title %}Hasil Prediksi | Prediksi Saham{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/result_style.css') }}">
-{% endblock %}
-
 {% block content %}
-<div class="result-page">
+{% set has_result = rows is defined and rows %}
 
-    <!-- Header -->
-    <section class="result-header">
-        <div class="result-header-text">
-            <span class="section-label">HASIL ANALISIS</span>
-            <h1>Hasil Prediksi Saham</h1>
-            <p>
-                Berikut adalah hasil prediksi harga penutupan saham
-                menggunakan model Bi-LSTM.
-            </p>
-        </div>
+<div class="page-header">
+    {{ badge('HASIL ANALISIS') }}
 
-        <div class="result-model">
-            <span>Model</span>
-            <strong>Bi-LSTM</strong>
-        </div>
-    </section>
+    <h1>Hasil Prediksi Saham</h1>
+
+    <p>
+        Berikut adalah hasil prediksi harga penutupan saham
+        menggunakan model Bi-LSTM.
+    </p>
+</div>
+
+{% if not has_result %}
+    <div class="card empty-state">
+        <section class="empty-state__inner">
+            <span class="empty-state__icon">{{ icon('chart-line', 30) }}</span>
+            <h2>Belum ada hasil prediksi</h2>
+            <p>Unggah data historis terlebih dahulu untuk melihat hasil.</p>
+            <a href="{{ url_for('prediction') }}" class="btn">
+                Ke Halaman Prediksi
+                {{ icon('arrow-right', 18, attrs='data-icon="inline-end"') }}
+            </a>
+        </section>
+    </div>
+{% else %}
+    {% set first_row = rows | first %}
+    {% set last_row = rows | last %}
+    {% set stock_text = stock if stock is defined and stock else '—' %}
+    {% set horizon_text = horizon if horizon is defined and horizon else '—' %}
+    {% set last_close_text = "Rp {:,.0f}".format(last_close | float) if last_close is defined and last_close is not none else '—' %}
+    {% set prediction_text = "Rp {:,.0f}".format(last_row.close | float) if last_row.close is defined and last_row.close is not none else '—' %}
+    {% set change_text = "{:+.2f}".format(change_pct | float) | replace('.', ',') if change_pct is defined and change_pct is not none else '—' %}
+    {% set change_positive = change_pct is defined and change_pct is not none and change_pct >= 0 %}
+    {% set change_class = 'text-positive' if change_positive else ('text-negative' if change_pct is defined and change_pct is not none else '') %}
 
     <!-- Informasi prediksi -->
-    <section class="result-info">
-        <div class="result-info-card">
-            <span>Kode Saham</span>
-            <strong>ANTM</strong>
+    <div class="info-grid">
+        <div class="card fact-card" data-size="sm">
+            <section>{{ info_row('Kode Saham', stock_text) }}</section>
         </div>
 
-        <div class="result-info-card">
-            <span>Periode Data</span>
-            <strong>Ilustrasi</strong>
+        <div class="card fact-card" data-size="sm">
+            <section>{{ info_row('Periode Data', first_row.date ~ ' – ' ~ last_row.date) }}</section>
         </div>
 
-        <div class="result-info-card">
-            <span>Horizon Prediksi</span>
-            <strong>5 Hari</strong>
+        <div class="card fact-card" data-size="sm">
+            <section>{{ info_row('Horizon Prediksi', horizon_text) }}</section>
         </div>
 
-        <div class="result-info-card">
-            <span>Variabel</span>
-            <strong>Close</strong>
+        <div class="card fact-card" data-size="sm">
+            <section>{{ info_row('Variabel', 'Close') }}</section>
         </div>
-    </section>
+    </div>
 
     <!-- Ringkasan hasil -->
-    <section class="result-summary">
-        <div class="result-summary-card">
-            <span>Harga Terakhir</span>
-            <h2>Rp 1.500</h2>
-            <small>Contoh nilai</small>
+    <div class="summary-grid">
+        <div class="card summary-card" data-size="sm">
+            <section>
+                <p class="summary-label">Harga Terakhir</p>
+                <p class="summary-value">{{ last_close_text }}</p>
+                <p class="summary-note">Nilai penutupan terakhir dari data masukan.</p>
+            </section>
         </div>
 
-        <div class="result-summary-card">
-            <span>Prediksi Hari ke-5</span>
-            <h2>Rp 1.560</h2>
-            <small>Contoh nilai</small>
+        <div class="card summary-card" data-size="sm">
+            <section>
+                <p class="summary-label">Prediksi Hari ke-{{ horizon_text }}</p>
+                <p class="summary-value">{{ prediction_text }}</p>
+                <p class="summary-note">Estimasi model untuk periode berikutnya.</p>
+            </section>
         </div>
 
-        <div class="result-summary-card">
-            <span>Perubahan</span>
-            <h2>+4,00%</h2>
-            <small>Ilustrasi, bukan rekomendasi investasi</small>
+        <div class="card summary-card" data-size="sm">
+            <section>
+                <p class="summary-label">Perubahan</p>
+                <p class="summary-value {{ change_class }}">{{ change_text }}{% if change_text != '—' %}%{% endif %}</p>
+                <p class="summary-note">Estimasi model, bukan rekomendasi investasi.</p>
+            </section>
         </div>
-    </section>
+    </div>
 
-    <!-- Grafik -->
-    <section class="result-section">
-        <div class="result-section-heading">
-            <div>
+    <div class="detail-stack">
+        <!-- Grafik -->
+        <div class="card detail-card">
+            <header>
                 <h2>Grafik Harga Saham</h2>
-                <p>
-                    Contoh visualisasi harga aktual dan hasil prediksi.
-                </p>
-            </div>
+                <p>Visualisasi harga aktual dan hasil prediksi.</p>
+            </header>
+
+            <section>
+                <div id="prediction-chart" class="chart-placeholder">
+                    <div class="chart-placeholder__content">
+                        <strong>Grafik Prediksi</strong>
+                        <p>Grafik akan tersedia setelah model terhubung.</p>
+                    </div>
+                </div>
+            </section>
         </div>
 
-        <div class="result-chart-placeholder">
-            <div class="chart-placeholder-content">
-                <strong>Grafik Prediksi</strong>
-                <p>
-                    Grafik harga aktual dan prediksi akan ditampilkan
-                    di bagian ini setelah backend terhubung.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tabel prediksi -->
-    <section class="result-section">
-        <div class="result-section-heading">
-            <div>
+        <!-- Tabel -->
+        <div class="card detail-card">
+            <header>
                 <h2>Rincian Hasil Prediksi</h2>
-                <p>
-                    Contoh tabel untuk lima hari perdagangan berikutnya.
-                </p>
-            </div>
+                <p>Tabel estimasi untuk {{ horizon_text }} hari perdagangan berikutnya.</p>
+            </header>
+
+            <section>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Hari</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Prediksi Close</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ row.date }}</td>
+                                    <td>Rp {{ "{:,.0f}".format(row.close | float) }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </div>
+    </div>
 
-        <div class="table-responsive">
-            <table class="result-table">
-                <thead>
-                    <tr>
-                        <th>Hari</th>
-                        <th>Tanggal</th>
-                        <th>Prediksi Close</th>
-                    </tr>
-                </thead>
+    <!-- Disclaimer -->
+    <div class="alert">
+        {{ icon('info', 20) }}
+        <h2>Catatan</h2>
+        <section>
+            <p>Seluruh angka merupakan estimasi model, bukan rekomendasi investasi.</p>
+        </section>
+    </div>
 
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Hari perdagangan berikutnya</td>
-                        <td>Rp 1.520</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Hari perdagangan ke-2</td>
-                        <td>Rp 1.535</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Hari perdagangan ke-3</td>
-                        <td>Rp 1.545</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Hari perdagangan ke-4</td>
-                        <td>Rp 1.550</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Hari perdagangan ke-5</td>
-                        <td>Rp 1.560</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <p class="result-note">
-            Catatan: seluruh angka pada halaman ini hanya ilustrasi,
-            bukan hasil model dan bukan saran untuk membeli atau
-            menjual saham.
-        </p>
-    </section>
-
-    <!-- Tombol -->
-    <section class="result-actions">
-        <a href="{{ url_for('prediction') }}"
-           class="result-btn result-btn-outline">
+    <!-- Aksi -->
+    <div class="action-row">
+        <a href="{{ url_for('prediction') }}" class="btn" data-variant="outline">
             Kembali ke Prediksi
         </a>
 
-        <button class="result-btn result-btn-primary"
-                type="button"
-                disabled>
-            Unduh Hasil (akan tersedia)
+        <button class="btn" type="button" disabled
+                title="Unduh hasil belum tersedia pada tahap prototipe.">
+            {{ icon('download', 18, attrs='data-icon="inline-start"') }}
+            Unduh Hasil
         </button>
-    </section>
+    </div>
+{% endif %}
 
-</div>
 {% endblock %}

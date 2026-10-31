@@ -1,341 +1,270 @@
-
 {% extends "base.html" %}
+{% from "components/icon.html" import icon %}
+{% from "components/macros.html" import badge %}
 
 {% block title %}Beranda | StockPredict{% endblock %}
 
 {% block content %}
 
-<!-- HERO SECTION -->
-<section class="hero-section py-5">
-    <div class="row align-items-center g-5">
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-copy">
+        {{ badge('PROTOTIPE PENELITIAN') }}
 
-        <!-- Hero text -->
-        <div class="col-lg-7">
-            <span class="badge text-bg-primary mb-3">
-                PROTOTIPE PENELITIAN
-            </span>
+        <h1>Prediksi Harga Saham <span class="text-primary">LQ45</span></h1>
 
-            <h1 class="display-4 fw-bold mb-3">
-                Prediksi Harga Saham
-                <span class="text-primary">LQ45</span>
-            </h1>
+        <p class="hero-lead">
+            Eksplorasi prediksi harga penutupan saham menggunakan
+            model Bi-LSTM berdasarkan data historis.
+            Unggah data, pilih saham, dan lihat hasil prediksi
+            dalam bentuk tabel dan grafik.
+        </p>
 
-            <p class="lead text-secondary mb-4">
-                Eksplorasi prediksi harga penutupan saham menggunakan
-                model Bi-LSTM berdasarkan data historis.
-                Unggah data, pilih saham, dan lihat hasil prediksi
-                dalam bentuk tabel dan grafik.
-            </p>
+        <div class="cluster">
+            <a href="{{ url_for('prediction') }}" class="btn" data-size="lg">
+                Mulai Prediksi
+                {{ icon('arrow-right', 18, attrs='data-icon="inline-end"') }}
+            </a>
 
-            <div class="d-flex flex-wrap gap-3">
-                <a href="{{ url_for('prediction') }}"
-                   class="btn btn-primary btn-lg">
-                    Mulai Prediksi
-                    <span aria-hidden="true">&rarr;</span>
-                </a>
-
-                <a href="{{ url_for('about') }}"
-                   class="btn btn-outline-secondary btn-lg">
-                    Tentang Aplikasi
-                </a>
-            </div>
-
-            <p class="small text-secondary mt-4 mb-0">
-                Model prediksi menggunakan data historis
-                dan model yang telah dilatih sebelumnya.
-            </p>
+            <a href="{{ url_for('about') }}" class="btn" data-variant="outline" data-size="lg">
+                Tentang Aplikasi
+            </a>
         </div>
 
-        <!-- Hero visual -->
-        <div class="col-lg-5">
-            <div class="hero-visual p-4 rounded-4 shadow-sm">
+        <p class="hero-note">
+            Model prediksi menggunakan data historis
+            dan model yang telah dilatih sebelumnya.
+        </p>
+    </div>
 
-                <div class="d-flex justify-content-between
-                            align-items-center mb-4">
-                    <div>
-                        <p class="text-secondary small mb-1">
-                            STOCK ANALYSIS
-                        </p>
-                        <h5 class="fw-bold mb-0">
-                            LQ45 Prediction
-                        </h5>
-                    </div>
+    <div class="card hero-visual">
+        <header>
+            <h2>LQ45 Prediction</h2>
+            <p>STOCK ANALYSIS</p>
+            <span class="badge card-action" data-variant="secondary">Bi-LSTM</span>
+        </header>
 
-                    <span class="badge text-bg-success">
-                        Bi-LSTM
-                    </span>
+        <section>
+            <p class="chart-label">Ilustrasi pergerakan harga</p>
+
+            <svg viewBox="0 0 500 220"
+                 class="hero-chart"
+                 role="img"
+                 aria-label="Ilustrasi grafik pergerakan harga saham historis dan prediksi">
+                <line x1="30" y1="30" x2="30" y2="185"
+                      stroke="var(--grid-line)" stroke-width="1"/>
+                <line x1="30" y1="185" x2="475" y2="185"
+                      stroke="var(--grid-line)" stroke-width="1"/>
+                <line x1="30" y1="65" x2="475" y2="65"
+                      stroke="var(--border)" stroke-dasharray="5 5"/>
+                <line x1="30" y1="125" x2="475" y2="125"
+                      stroke="var(--border)" stroke-dasharray="5 5"/>
+
+                <path d="M30 155
+                         C55 145, 65 165, 90 135
+                         S130 120, 150 135
+                         S185 95, 210 110
+                         S245 135, 270 90
+                         S310 105, 330 75
+                         S370 95, 395 65"
+                      fill="none"
+                      stroke="var(--primary)"
+                      stroke-width="4"
+                      stroke-linecap="round"/>
+
+                <path d="M395 65
+                         C420 55, 440 85, 470 35"
+                      fill="none"
+                      stroke="var(--positive)"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-dasharray="7 6"/>
+
+                <circle cx="395" cy="65" r="5" fill="var(--primary)"/>
+
+                <text x="35" y="205" font-size="12"
+                      fill="var(--muted-foreground)">Historis</text>
+                <text x="395" y="205" font-size="12"
+                      fill="var(--muted-foreground)">Prediksi</text>
+            </svg>
+
+            <div class="hero-summary">
+                <div class="hero-summary__item">
+                    <p>Input</p>
+                    <strong>Data historis</strong>
                 </div>
-
-                <div class="chart-placeholder mb-3">
-                    <div class="chart-label">
-                        Ilustrasi pergerakan harga
-                    </div>
-
-                    <svg viewBox="0 0 500 220"
-                         class="w-100"
-                         role="img"
-                         aria-label="Ilustrasi grafik pergerakan harga saham">
-
-                        <line x1="30" y1="30" x2="30"
-                              y2="185" stroke="#cbd5e1"
-                              stroke-width="1"/>
-
-                        <line x1="30" y1="185" x2="475"
-                              y2="185" stroke="#cbd5e1"
-                              stroke-width="1"/>
-
-                        <line x1="30" y1="65" x2="475"
-                              y2="65" stroke="#e2e8f0"
-                              stroke-dasharray="5 5"/>
-
-                        <line x1="30" y1="125" x2="475"
-                              y2="125" stroke="#e2e8f0"
-                              stroke-dasharray="5 5"/>
-
-                        <path d="M30 155
-                                 C55 145, 65 165, 90 135
-                                 S130 120, 150 135
-                                 S185 95, 210 110
-                                 S245 135, 270 90
-                                 S310 105, 330 75
-                                 S370 95, 395 65"
-                              fill="none"
-                              stroke="#2563eb"
-                              stroke-width="4"
-                              stroke-linecap="round"/>
-
-                        <path d="M395 65
-                                 C420 55, 440 85, 470 35"
-                              fill="none"
-                              stroke="#16a34a"
-                              stroke-width="4"
-                              stroke-linecap="round"
-                              stroke-dasharray="7 6"/>
-
-                        <circle cx="395" cy="65" r="5"
-                                fill="#2563eb"/>
-
-                        <text x="35" y="205"
-                              font-size="12"
-                              fill="#64748b">Historis</text>
-
-                        <text x="395" y="205"
-                              font-size="12"
-                              fill="#64748b">Prediksi</text>
-                    </svg>
+                <div class="hero-summary__item">
+                    <p>Output</p>
+                    <strong>Harga prediksi</strong>
                 </div>
-
-                <div class="row g-2">
-                    <div class="col-6">
-                        <div class="summary-box p-3 rounded-3">
-                            <p class="small text-secondary mb-1">
-                                Input
-                            </p>
-                            <h6 class="fw-bold mb-0">
-                                Data historis
-                            </h6>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="summary-box p-3 rounded-3">
-                            <p class="small text-secondary mb-1">
-                                Output
-                            </p>
-                            <h6 class="fw-bold mb-0">
-                                Harga prediksi
-                            </h6>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="small text-secondary mt-3 mb-0">
-                    Grafik hanya ilustrasi, bukan hasil prediksi aktual.
-                </p>
             </div>
-        </div>
 
+            <p class="hero-visual__note">
+                Grafik hanya ilustrasi, bukan hasil prediksi aktual.
+            </p>
+        </section>
     </div>
 </section>
 
+<!-- STATISTIK -->
+<section aria-label="Ringkasan prototipe">
+    <div class="grid-3">
+        <div class="card stat-card" data-size="sm">
+            <section>
+                <p class="stat-value">5 Saham</p>
+                <p class="stat-label">Pilihan saham LQ45 pada prototipe.</p>
+            </section>
+        </div>
+
+        <div class="card stat-card" data-size="sm">
+            <section>
+                <p class="stat-value">1 Variabel</p>
+                <p class="stat-label">Harga penutupan (Close) sebagai variabel utama.</p>
+            </section>
+        </div>
+
+        <div class="card stat-card" data-size="sm">
+            <section>
+                <p class="stat-value">3 Horizon</p>
+                <p class="stat-label">Pilihan horizon prediksi: 1, 5, dan 10 hari.</p>
+            </section>
+        </div>
+    </div>
+</section>
 
 <!-- RINGKASAN APLIKASI -->
-<section class="py-4">
-    <div class="row g-3">
-
-        <div class="col-md-4">
-            <div class="info-card h-100 p-4 rounded-3">
-                <div class="info-icon mb-3">
-                    <span>01</span>
-                </div>
-                <h5 class="fw-bold">Saham LQ45</h5>
-                <p class="text-secondary mb-0">
+<section class="section">
+    <div class="grid-3">
+        <div class="card feature-card">
+            <section>
+                <div class="feature-icon">{{ icon('database', 22) }}</div>
+                <h3>Saham LQ45</h3>
+                <p>
                     Pilihan saham yang termasuk dalam
                     cakupan penelitian dan tersedia
                     pada prototipe.
                 </p>
-            </div>
+            </section>
         </div>
 
-        <div class="col-md-4">
-            <div class="info-card h-100 p-4 rounded-3">
-                <div class="info-icon mb-3">
-                    <span>02</span>
-                </div>
-                <h5 class="fw-bold">Model Bi-LSTM</h5>
-                <p class="text-secondary mb-0">
+        <div class="card feature-card">
+            <section>
+                <div class="feature-icon">{{ icon('cpu', 22) }}</div>
+                <h3>Model Bi-LSTM</h3>
+                <p>
                     Menggunakan model deep learning
                     terlatih untuk mempelajari pola
                     harga penutupan saham.
                 </p>
-            </div>
+            </section>
         </div>
 
-        <div class="col-md-4">
-            <div class="info-card h-100 p-4 rounded-3">
-                <div class="info-icon mb-3">
-                    <span>03</span>
-                </div>
-                <h5 class="fw-bold">Prediksi Fleksibel</h5>
-                <p class="text-secondary mb-0">
+        <div class="card feature-card">
+            <section>
+                <div class="feature-icon">{{ icon('chart-line', 22) }}</div>
+                <h3>Prediksi Fleksibel</h3>
+                <p>
                     Menyediakan pilihan horizon prediksi
                     sesuai opsi yang nantinya tersedia
                     pada aplikasi.
                 </p>
-            </div>
+            </section>
         </div>
-
     </div>
 </section>
 
-
 <!-- FITUR UTAMA -->
-<section class="py-5">
-    <div class="text-center mb-4">
-        <span class="text-primary fw-semibold">
-            FITUR APLIKASI
-        </span>
-
-        <h2 class="fw-bold mt-2">
-            Bagaimana StockPredict Bekerja?
-        </h2>
-
-        <p class="text-secondary">
-            Tiga langkah untuk memperoleh hasil prediksi saham.
-        </p>
+<section class="section">
+    <div class="section-heading">
+        <span class="eyebrow">Fitur Aplikasi</span>
+        <h2>Bagaimana StockPredict Bekerja?</h2>
+        <p>Tiga langkah untuk memperoleh hasil prediksi saham.</p>
     </div>
 
-    <div class="row g-4">
-
-        <div class="col-md-4">
-            <div class="feature-card h-100 p-4 rounded-4">
-                <div class="feature-number">1</div>
-
-                <h5 class="fw-bold mt-3">
-                    Pilih Saham
-                </h5>
-
-                <p class="text-secondary mb-0">
+    <div class="grid-3">
+        <div class="card feature-card">
+            <section>
+                <div class="feature-icon">{{ icon('database', 22) }}</div>
+                <h3>Pilih Saham</h3>
+                <p>
                     Pilih salah satu saham yang tersedia
                     dalam prototipe. Setiap saham
                     menggunakan model yang sesuai.
                 </p>
-            </div>
+            </section>
         </div>
 
-        <div class="col-md-4">
-            <div class="feature-card h-100 p-4 rounded-4">
-                <div class="feature-number">2</div>
-
-                <h5 class="fw-bold mt-3">
-                    Unggah Data CSV
-                </h5>
-
-                <p class="text-secondary mb-0">
+        <div class="card feature-card">
+            <section>
+                <div class="feature-icon">{{ icon('upload', 22) }}</div>
+                <h3>Unggah Data CSV</h3>
+                <p>
                     Unggah data historis saham dengan
                     kolom harga penutupan (Close)
                     sesuai format yang ditentukan.
                 </p>
-            </div>
+            </section>
         </div>
 
-        <div class="col-md-4">
-            <div class="feature-card h-100 p-4 rounded-4">
-                <div class="feature-number">3</div>
-
-                <h5 class="fw-bold mt-3">
-                    Lihat Hasil Prediksi
-                </h5>
-
-                <p class="text-secondary mb-0">
+        <div class="card feature-card">
+            <section>
+                <div class="feature-icon">{{ icon('chart-line', 22) }}</div>
+                <h3>Lihat Hasil Prediksi</h3>
+                <p>
                     Tampilkan hasil prediksi dalam
                     tabel dan grafik untuk membantu
                     eksplorasi pola harga saham.
                 </p>
-            </div>
+            </section>
         </div>
-
     </div>
 </section>
-
 
 <!-- METODE -->
-<section class="method-section p-4 p-md-5 rounded-4 mb-4">
-    <div class="row align-items-center g-4">
+<section class="section">
+    <div class="card method-card">
+        <section class="method-inner">
+            <div>
+                {{ badge('METODE PENELITIAN') }}
 
-        <div class="col-lg-8">
-            <span class="badge text-bg-primary mb-3">
-                METODE PENELITIAN
-            </span>
+                <h2>Bidirectional Long Short-Term Memory</h2>
 
-            <h2 class="fw-bold mb-3">
-                Bidirectional Long Short-Term Memory
-            </h2>
-
-            <p class="text-secondary mb-0">
-                Bi-LSTM merupakan arsitektur recurrent neural
-                network yang memproses urutan data melalui
-                dua arah. Pada prototipe ini, model digunakan
-                untuk memprediksi harga penutupan saham
-                berdasarkan data historis yang diberikan.
-            </p>
-        </div>
-
-        <div class="col-lg-4 text-lg-end">
-            <div class="method-label d-inline-block
-                        rounded-3 p-3">
-                <span class="d-block small text-secondary">
-                    Model
-                </span>
-                <span class="fs-3 fw-bold text-primary">
-                    Bi-LSTM
-                </span>
-                <span class="d-block small text-secondary">
-                    Univariate
-                </span>
+                <p>
+                    Bi-LSTM merupakan arsitektur recurrent neural
+                    network yang memproses urutan data melalui
+                    dua arah. Pada prototipe ini, model digunakan
+                    untuk memprediksi harga penutupan saham
+                    berdasarkan data historis yang diberikan.
+                </p>
             </div>
-        </div>
 
+            <div class="method-badge">
+                <span>Model</span>
+                <strong>Bi-LSTM</strong>
+                <span>Univariate</span>
+            </div>
+        </section>
     </div>
 </section>
 
-
 <!-- CTA -->
-<section class="text-center py-5">
-    <h2 class="fw-bold">
-        Mulai Eksplorasi Prediksi Saham
-    </h2>
+<section class="section">
+    <div class="card cta-card">
+        <section class="cta-inner">
+            <div>
+                <h2>Mulai Eksplorasi Prediksi Saham</h2>
+                <p>
+                    Pilih saham dan gunakan data historis
+                    untuk melihat hasil prediksi model.
+                </p>
+            </div>
 
-    <p class="text-secondary mb-4">
-        Pilih saham dan gunakan data historis
-        untuk melihat hasil prediksi model.
-    </p>
-
-    <a href="{{ url_for('prediction') }}"
-       class="btn btn-primary btn-lg">
-        Mulai Prediksi Sekarang
-        <span aria-hidden="true">&rarr;</span>
-    </a>
+            <a href="{{ url_for('prediction') }}" class="btn" data-size="lg">
+                Mulai Prediksi Sekarang
+                {{ icon('arrow-right', 18, attrs='data-icon="inline-end"') }}
+            </a>
+        </section>
+    </div>
 </section>
 
 {% endblock %}
