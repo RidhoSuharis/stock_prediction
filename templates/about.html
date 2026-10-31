@@ -1,163 +1,182 @@
-
 {% extends "base.html" %}
+{% from "components/icon.html" import icon %}
+{% from "components/macros.html" import badge %}
 
 {% block title %}Tentang Aplikasi | Prediksi Saham{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/about_style.css') }}">
-{% endblock %}
-
 {% block content %}
-<div class="about-page">
 
-    <!-- Hero -->
-    <section class="about-hero">
-        <span class="about-label">TENTANG APLIKASI</span>
-        <h1>Prediksi Harga Saham Berbasis Bi-LSTM</h1>
-        <p>
-            Aplikasi untuk membantu pengguna mengeksplorasi prediksi
-            harga penutupan saham menggunakan pendekatan pembelajaran
-            mendalam berbasis data historis.
-        </p>
-    </section>
+<section class="page-hero">
+    {{ badge('TENTANG APLIKASI') }}
+
+    <h1>Prediksi Harga Saham Berbasis Bi-LSTM</h1>
+
+    <p>
+        Aplikasi untuk membantu pengguna mengeksplorasi prediksi
+        harga penutupan saham menggunakan pendekatan pembelajaran
+        mendalam berbasis data historis.
+    </p>
+</section>
+
+<div class="page-stack">
 
     <!-- Tujuan -->
-    <section class="about-section">
-        <h2>Tujuan Aplikasi</h2>
-        <p>
-            Aplikasi ini dikembangkan sebagai implementasi hasil
-            penelitian pemodelan dan prediksi harga saham. Pengguna
-            dapat memilih saham, mengunggah data historis, dan melihat
-            hasil prediksi berdasarkan model yang telah disiapkan.
-        </p>
-    </section>
+    <div class="card">
+        <section>
+            <h2>Tujuan Aplikasi</h2>
+            <p>
+                Aplikasi ini dikembangkan sebagai implementasi hasil
+                penelitian pemodelan dan prediksi harga saham. Pengguna
+                dapat memilih saham, mengunggah data historis, dan melihat
+                hasil prediksi berdasarkan model yang telah disiapkan.
+            </p>
+        </section>
+    </div>
 
     <!-- Metode -->
-    <section class="about-section">
-        <h2>Metode yang Digunakan</h2>
+    <div class="card">
+        <section>
+            <h2>Metode yang Digunakan</h2>
 
-        <div class="about-method-card">
-            <div class="about-method-icon">Bi</div>
-            <div>
-                <h3>Bidirectional Long Short-Term Memory (Bi-LSTM)</h3>
-                <p>
-                    Bi-LSTM merupakan arsitektur jaringan saraf
-                    berulang yang memproses urutan data melalui dua
-                    arah. Dalam aplikasi ini, model digunakan untuk
-                    mempelajari pola pada data historis harga penutupan
-                    saham dan menghasilkan estimasi untuk periode
-                    berikutnya.
-                </p>
+            <div class="method-callout">
+                <div class="method-callout__icon">{{ icon('cpu', 24) }}</div>
+                <div>
+                    <h3>Bidirectional Long Short-Term Memory (Bi-LSTM)</h3>
+                    <p>
+                        Bi-LSTM merupakan arsitektur jaringan saraf
+                        berulang yang memproses urutan data melalui dua
+                        arah. Dalam aplikasi ini, model digunakan untuk
+                        mempelajari pola pada data historis harga penutupan
+                        saham dan menghasilkan estimasi untuk periode
+                        berikutnya.
+                    </p>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </div>
 
     <!-- Data -->
-    <section class="about-section">
-        <h2>Data dan Variabel</h2>
-        <p>
-            Aplikasi dirancang untuk menggunakan data historis saham
-            yang disiapkan pengguna dalam format CSV.
-        </p>
+    <div class="card">
+        <section>
+            <h2>Data dan Variabel</h2>
+            <p>
+                Aplikasi dirancang untuk menggunakan data historis saham
+                yang disiapkan pengguna dalam format CSV.
+            </p>
 
-        <div class="about-data-grid">
-            <div class="about-data-card">
-                <span class="about-card-label">Format masukan</span>
-                <strong>CSV</strong>
-                <p>Data historis yang memiliki kolom tanggal dan harga.</p>
-            </div>
+            <div class="grid-3">
+                <div class="card data-card" data-size="sm">
+                    <section>
+                        <span class="card-label">Format masukan</span>
+                        <strong>CSV</strong>
+                        <p>Data historis yang memiliki kolom tanggal dan harga.</p>
+                    </section>
+                </div>
 
-            <div class="about-data-card">
-                <span class="about-card-label">Variabel prediksi</span>
-                <strong>Close</strong>
-                <p>Harga penutupan saham sebagai variabel utama.</p>
-            </div>
+                <div class="card data-card" data-size="sm">
+                    <section>
+                        <span class="card-label">Variabel prediksi</span>
+                        <strong>Close</strong>
+                        <p>Harga penutupan saham sebagai variabel utama.</p>
+                    </section>
+                </div>
 
-            <div class="about-data-card">
-                <span class="about-card-label">Pilihan saham</span>
-                <strong>5 Saham</strong>
-                <p>ANTM, BBCA, BBRI, BMRI, dan TLKM.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Alur -->
-    <section class="about-section">
-        <h2>Bagaimana Aplikasi Bekerja?</h2>
-
-        <div class="about-steps">
-            <div class="about-step">
-                <div class="about-step-number">1</div>
-                <div>
-                    <h3>Pilih Saham</h3>
-                    <p>
-                        Pengguna memilih salah satu kode saham yang
-                        tersedia pada aplikasi.
-                    </p>
+                <div class="card data-card" data-size="sm">
+                    <section>
+                        <span class="card-label">Pilihan saham</span>
+                        <strong>5 Saham</strong>
+                        <p>ANTM, BBCA, BBRI, BMRI, dan TLKM.</p>
+                    </section>
                 </div>
             </div>
+        </section>
+    </div>
 
-            <div class="about-step">
-                <div class="about-step-number">2</div>
-                <div>
-                    <h3>Unggah Data</h3>
-                    <p>
-                        Pengguna mengunggah file CSV yang berisi
-                        tanggal dan harga penutupan saham.
-                    </p>
-                </div>
-            </div>
+    <!-- Cara kerja -->
+    <div class="card">
+        <section>
+            <h2>Bagaimana Aplikasi Bekerja?</h2>
 
-            <div class="about-step">
-                <div class="about-step-number">3</div>
-                <div>
-                    <h3>Proses Prediksi</h3>
-                    <p>
-                        Aplikasi memproses data dan menjalankan model
-                        Bi-LSTM yang sesuai dengan saham pilihan.
-                    </p>
-                </div>
-            </div>
+            <ol class="steps">
+                <li class="step">
+                    {{ badge('1', 'secondary') }}
+                    <div>
+                        <h3>Pilih Saham</h3>
+                        <p>
+                            Pengguna memilih salah satu kode saham yang
+                            tersedia pada aplikasi.
+                        </p>
+                    </div>
+                </li>
 
-            <div class="about-step">
-                <div class="about-step-number">4</div>
-                <div>
-                    <h3>Lihat Hasil</h3>
-                    <p>
-                        Pengguna melihat grafik dan tabel hasil
-                        prediksi untuk horizon yang dipilih.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
+                <li class="step">
+                    {{ badge('2', 'secondary') }}
+                    <div>
+                        <h3>Unggah Data</h3>
+                        <p>
+                            Pengguna mengunggah file CSV yang berisi
+                            tanggal dan harga penutupan saham.
+                        </p>
+                    </div>
+                </li>
+
+                <li class="step">
+                    {{ badge('3', 'secondary') }}
+                    <div>
+                        <h3>Proses Prediksi</h3>
+                        <p>
+                            Aplikasi memproses data dan menjalankan model
+                            Bi-LSTM yang sesuai dengan saham pilihan.
+                        </p>
+                    </div>
+                </li>
+
+                <li class="step">
+                    {{ badge('4', 'secondary') }}
+                    <div>
+                        <h3>Lihat Hasil</h3>
+                        <p>
+                            Pengguna melihat grafik dan tabel hasil
+                            prediksi untuk horizon yang dipilih.
+                        </p>
+                    </div>
+                </li>
+            </ol>
+        </section>
+    </div>
 
     <!-- Batasan -->
-    <section class="about-disclaimer">
+    <div class="alert">
+        {{ icon('triangle-alert', 20) }}
         <h2>Catatan dan Batasan</h2>
-        <p>
-            Hasil prediksi merupakan estimasi model berdasarkan data
-            masukan dan pola yang dipelajari. Hasil tersebut tidak
-            menjamin harga saham di masa mendatang dan tidak
-            dimaksudkan sebagai rekomendasi investasi.
-        </p>
-    </section>
+        <section>
+            <p>
+                Hasil prediksi merupakan estimasi model berdasarkan data
+                masukan dan pola yang dipelajari. Hasil tersebut tidak
+                menjamin harga saham di masa mendatang dan tidak
+                dimaksudkan sebagai rekomendasi investasi.
+            </p>
+        </section>
+    </div>
 
     <!-- CTA -->
-    <section class="about-cta">
-        <div>
-            <h2>Mulai Prediksi Saham</h2>
-            <p>
-                Pilih saham dan masukkan data historis untuk melihat
-                hasil prediksi.
-            </p>
-        </div>
+    <div class="card cta-card">
+        <section class="cta-inner">
+            <div>
+                <h2>Mulai Prediksi Saham</h2>
+                <p>
+                    Pilih saham dan masukkan data historis untuk melihat
+                    hasil prediksi.
+                </p>
+            </div>
 
-        <a href="{{ url_for('prediction') }}" class="about-cta-button">
-            Buka Halaman Prediksi
-        </a>
-    </section>
+            <a href="{{ url_for('prediction') }}" class="btn" data-size="lg">
+                Buka Halaman Prediksi
+                {{ icon('arrow-right', 18, attrs='data-icon="inline-end"') }}
+            </a>
+        </section>
+    </div>
 
 </div>
+
 {% endblock %}

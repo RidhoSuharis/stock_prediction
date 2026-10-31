@@ -1,126 +1,45 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>
-        {% block title %}Prediksi Saham LQ45{% endblock %}
-    </title>
+    <title>{% block title %}Prediksi Saham LQ45{% endblock %}</title>
 
-    <!-- Bootstrap CSS -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/style.css') }}">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/basecoat/basecoat.cdn.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
     {% block extra_css %}{% endblock %}
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
+    <header class="site-header">
+        <div class="container site-header__inner">
+            <a class="site-brand" href="{{ url_for('index') }}">StockPredict</a>
 
-            <a class="navbar-brand fw-bold"
-               href="{{ url_for('index') }}">
-                StockPredict
-            </a>
-
-            <button
-                class="navbar-toggler"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#navbarMenu"
-                aria-controls="navbarMenu"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse"
-                 id="navbarMenu">
-
-                <ul class="navbar-nav ms-auto">
-
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="{{ url_for('index') }}">
-                            Beranda
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="{{ url_for('prediction') }}">
-                            Prediksi
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link"
-                           href="{{ url_for('about') }}">
-                            Tentang
-                        </a>
-                    </li>
-
-                </ul>
-            </div>
+            <nav class="site-nav" aria-label="Navigasi utama">
+                <a href="{{ url_for('index') }}"{% if request.endpoint == 'index' %} aria-current="page"{% endif %}>Beranda</a>
+                <a href="{{ url_for('prediction') }}"{% if request.endpoint == 'prediction' %} aria-current="page"{% endif %}>Prediksi</a>
+                <a href="{{ url_for('about') }}"{% if request.endpoint == 'about' %} aria-current="page"{% endif %}>Tentang</a>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-
-    <!-- MAIN CONTENT -->
-    <main class="container my-4">
-
-        {% block content %}
-        {% endblock %}
-
+    <main class="container site-main">
+        {% block content %}{% endblock %}
     </main>
 
-
-    <!-- FOOTER -->
-    <footer class="bg-dark text-white py-3 mt-5">
-        <div class="container text-center">
-
-            <p class="mb-1">
-                <strong>StockPredict</strong>
-            </p>
-
-            <small>
-                Prototipe Prediksi Harga Saham LQ45
-                menggunakan Deep Learning
-            </small>
-
-            <div class="mt-2">
-                <small>
-                    &copy; 2026
-                    | Penelitian Matematika Keuangan
-                </small>
-            </div>
-
+    <footer class="site-footer">
+        <div class="container site-footer__inner">
+            <p><strong>StockPredict</strong></p>
+            <p class="text-muted">Prototipe Prediksi Harga Saham LQ45 menggunakan Deep Learning</p>
+            <p class="text-muted">&copy; 2026 | Penelitian Matematika Keuangan</p>
         </div>
     </footer>
 
-
-    <!-- Bootstrap JavaScript -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
-    </script>
-
-    <!-- Custom JavaScript -->
-    <script
-        src="{{ url_for('static', filename='js/main.js') }}">
-    </script>
-
+    <script src="{{ url_for('static', filename='vendor/basecoat/js/all.min.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
     {% block extra_js %}{% endblock %}
 
 </body>
