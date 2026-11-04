@@ -1,287 +1,382 @@
 
 {% extends "base.html" %}
+{% from "components/icon.html" import icon %}
+{% from "components/macros.html" import badge, flash_messages, info_row %}
 
 {% block title %}Prediksi Saham | StockPredict{% endblock %}
 
 {% block content %}
 
-<section class="py-4">
+<!-- ==========================================
+     PAGE HEADER
+=========================================== -->
+<div class="page-header">
 
-    <!-- HEADER -->
-    <div class="mb-4">
-        <span class="badge text-bg-primary mb-2">
-            STOCK PREDICTION
-        </span>
+    {{ badge('STOCK PREDICTION') }}
 
-        <h1 class="fw-bold">
-            Prediksi Harga Saham
-        </h1>
+    <h1>Prediksi Harga Saham</h1>
 
-        <p class="text-secondary">
-            Pilih saham, unggah data historis, dan tentukan
-            horizon prediksi menggunakan model Bi-LSTM.
-        </p>
+    <p>
+        Pilih saham, unggah data historis, dan tentukan
+        horizon prediksi menggunakan model Bi-LSTM.
+    </p>
+
+</div>
+
+
+<!-- FLASH MESSAGES -->
+{{ flash_messages() }}
+
+
+<!-- ==========================================
+     FORM LAYOUT
+=========================================== -->
+<div class="form-layout">
+
+
+    <!-- ==========================================
+         FORM PREDIKSI
+    =========================================== -->
+    <div class="card form-card">
+
+        <header>
+
+            <h2>Form Prediksi</h2>
+
+            <p>
+                Lengkapi data berikut untuk menjalankan prediksi.
+            </p>
+
+        </header>
+
+
+        <section>
+
+            <form
+                action="{{ url_for('prediction.process_prediction') }}"
+                method="POST"
+                enctype="multipart/form-data"
+                id="prediction-form"
+            >
+
+                <div class="form-fields">
+
+
+                    <!-- ==================================
+                         1. PILIH SAHAM
+                    =================================== -->
+                    <div class="field">
+
+                        <label for="stock">
+                            1. Pilih Saham
+                        </label>
+
+                        <select
+                            class="select"
+                            id="stock"
+                            name="stock"
+                            required
+                        >
+
+                            <option value="" selected disabled>
+                                Pilih kode saham
+                            </option>
+
+                            <option value="ANTM">
+                                ANTM — Aneka Tambang
+                            </option>
+
+                            <option value="BBCA">
+                                BBCA — Bank Central Asia
+                            </option>
+
+                            <option value="BBRI">
+                                BBRI — Bank Rakyat Indonesia
+                            </option>
+
+                            <option value="BMRI">
+                                BMRI — Bank Mandiri
+                            </option>
+
+                            <option value="TLKM">
+                                TLKM — Telkom Indonesia
+                            </option>
+
+                        </select>
+
+                        <p>
+                            Pilih salah satu saham yang tersedia
+                            pada prototipe.
+                        </p>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         2. UPLOAD CSV
+                    =================================== -->
+                    <div class="field" id="csv-field">
+
+                        <label for="csv_file">
+                            2. Unggah Data Historis
+                        </label>
+
+
+                        <div class="upload-box">
+
+                            <div class="upload-icon">
+
+                                {{ icon('file-spreadsheet', 24) }}
+
+                            </div>
+
+
+                            <p class="upload-title">
+                                Unggah file CSV
+                            </p>
+
+
+                            <p class="upload-text">
+                                Pilih file data historis saham
+                                dari komputer Anda.
+                            </p>
+
+
+                            <input
+                                type="file"
+                                class="file-input"
+                                id="csv_file"
+                                name="csv_file"
+                                accept=".csv,text/csv"
+                                aria-describedby="file-hint csv-error"
+                                required
+                            />
+
+                        </div>
+
+
+                        <p>
+                            Format: CSV. Kolom wajib: Date dan Close.
+                        </p>
+
+                        <p>
+                            Minimal 30 hari perdagangan valid.
+                        </p>
+
+                        <p class="text-muted text-small">
+                            Ukuran maksimal file: 5 MB.
+                        </p>
+
+
+                        <p
+                            id="file-hint"
+                            class="text-muted text-small"
+                            aria-live="polite"
+                        ></p>
+
+
+                        <p
+                            id="csv-error"
+                            role="alert"
+                            class="field-error"
+                            hidden
+                        ></p>
+
+
+                        <!-- DOWNLOAD TEMPLATE -->
+                        <div class="template-download">
+
+                            <p class="text-muted text-small">
+                                Belum memiliki format file?
+                            </p>
+
+                            <a
+                                href="{{ url_for('main.download_template') }}"
+                                class="btn"
+                                data-variant="outline"
+                            >
+
+                                {{ icon('download', 18) }}
+
+                                Unduh Template CSV
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================================
+                         3. HORIZON PREDIKSI
+                    =================================== -->
+                    <div class="field">
+
+                        <label for="horizon">
+                            3. Pilih Horizon Prediksi
+                        </label>
+
+                        <select
+                            class="select"
+                            id="horizon"
+                            name="horizon"
+                            required
+                        >
+
+                            <option value="" selected disabled>
+                                Pilih jumlah hari
+                            </option>
+
+                            <option value="1">
+                                1 hari ke depan
+                            </option>
+
+                            <option value="5">
+                                5 hari ke depan
+                            </option>
+
+                            <option value="10">
+                                10 hari ke depan
+                            </option>
+
+                        </select>
+
+                        <p>
+                            Horizon menunjukkan jumlah langkah
+                            prediksi yang akan dihasilkan.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ==================================
+                     SUBMIT BUTTON
+                =================================== -->
+                <button
+                    type="submit"
+                    class="btn btn-block"
+                    data-size="lg"
+                >
+
+                    <span data-label>
+                        Mulai Prediksi
+                    </span>
+
+                    {{ icon(
+                        'arrow-right',
+                        18,
+                        attrs='data-icon="inline-end" data-arrow'
+                    ) }}
+
+
+                    <!-- LOADING SPINNER -->
+                    <svg
+                        data-spinner
+                        hidden
+                        class="icon animate-spin"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+
+                        <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
+
+                    </svg>
+
+                </button>
+
+            </form>
+
+        </section>
+
     </div>
 
 
-    <!-- FORM CARD -->
-    <div class="row g-4">
 
-        <div class="col-lg-8">
-
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-4 p-md-5">
-
-                    <form action="{{ url_for('prediction.process_prediction') }}" 
-                          method="POST"
-                          enctype="multipart/form-data">
-
-                        <!-- PILIH SAHAM -->
-                        <div class="mb-4">
-                            <label for="stock"
-                                   class="form-label fw-semibold">
-                                1. Pilih Saham
-                            </label>
-
-                            <select class="form-select"
-                                    id="stock"
-                                    name="stock"
-                                    required>
-
-                                <option value="" selected disabled>
-                                    Pilih kode saham
-                                </option>
-
-                                <option value="ANTM">
-                                    ANTM — Aneka Tambang
-                                </option>
-
-                                <option value="BBCA">
-                                    BBCA — Bank Central Asia
-                                </option>
-
-                                <option value="BBRI">
-                                    BBRI — Bank Rakyat Indonesia
-                                </option>
-
-                                <option value="BMRI">
-                                    BMRI — Bank Mandiri
-                                </option>
-
-                                <option value="TLKM">
-                                    TLKM — Telkom Indonesia
-                                </option>
-
-                            </select>
-
-                            <div class="form-text">
-                                Pilih salah satu saham yang tersedia
-                                pada prototipe.
-                            </div>
-                        </div>
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+    <aside class="sidebar">
 
 
-                        <!-- UPLOAD CSV -->
-                        <div class="mb-4">
-                            <label for="csv_file"
-                                   class="form-label fw-semibold">
-                                2. Unggah Data Historis
-                            </label>
+        <!-- INFORMASI MODEL -->
+        <div class="card" data-size="sm">
 
-                            <div class="upload-box p-4 text-center
-                                        rounded-3">
+            <header>
 
-                                <div class="mb-3">
-                                    <span class="upload-icon">
-                                        <i class="bi bi-cloud-arrow-up"></i>
-                                    </span>
-                                </div>
+                <h2>Informasi Model</h2>
 
-                                <h5 class="fw-semibold">
-                                    Unggah file CSV
-                                </h5>
-
-                                <p class="text-secondary small">
-                                    Pilih file data historis saham
-                                    dari komputer Anda.
-                                </p>
-
-                                <input
-                                    type="file"
-                                    class="form-control"
-                                    id="csv_file"
-                                    name="csv_file"
-                                    accept=".csv,text/csv"
-                                    required>
-
-                                <div class="form-text mt-2">
-                                    Format yang diterima: CSV.
-                                    Kolom yang diperlukan: Date dan Close.
-                                </div>
-
-                                <div class="form-text mt-1">
-                                    Minimal 30 hari perdagangan valid.
-                                </div>
-
-                                <hr class="my-3">
-                                
-                                <!-- DOWNLOAD TEMPLATE -->
-                                 <div class="text-center">
-
-                                    <p class="small text-secondary mb-2">
-                                        Belum memiliki format file?
-                                    </p>
-
-                                    <a href="{{ url_for('main.download_template') }}"
-                                    class="btn btn-primary">
-                                        <i class="bi bi-download me-2"></i>
-                                        Unduh Template CSV
-                                    </a>
-
-                                </div>
-
-                            </div>
-                        </div>
+            </header>
 
 
-                        <!-- HORIZON -->
-                        <div class="mb-4">
-                            <label for="horizon"
-                                   class="form-label fw-semibold">
-                                3. Pilih Horizon Prediksi
-                            </label>
+            <section>
 
-                            <select class="form-select"
-                                    id="horizon"
-                                    name="horizon"
-                                    required>
+                <div class="info-stack">
 
-                                <option value="" selected disabled>
-                                    Pilih jumlah hari
-                                </option>
+                    {{ info_row('Metode', 'Bidirectional LSTM') }}
 
-                                <option value="1">
-                                    1 hari ke depan
-                                </option>
+                    {{ info_row('Jenis Data', 'Univariate') }}
 
-                                <option value="5">
-                                    5 hari ke depan
-                                </option>
+                    {{ info_row('Variabel', 'Harga Penutupan (Close)') }}
 
-                                <option value="10">
-                                    10 hari ke depan
-                                </option>
-
-                            </select>
-
-                            <div class="form-text">
-                                Horizon menunjukkan jumlah langkah
-                                prediksi yang akan dihasilkan.
-                            </div>
-                        </div>
-
-
-                        <!-- SUBMIT -->
-                        <div class="d-grid">
-                            <button type="submit"
-                                    class="btn btn-primary btn-lg">
-                                Mulai Prediksi
-                                <span aria-hidden="true">&rarr;</span>
-                            </button>
-                        </div>
-
-                    </form>
+                    {{ info_row('Input', 'Data historis saham') }}
 
                 </div>
-            </div>
+
+            </section>
 
         </div>
 
 
-        <!-- SIDEBAR INFORMASI -->
-        <div class="col-lg-4">
 
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4">
+        <!-- PETUNJUK PENGGUNAAN -->
+        <div class="card" data-size="sm">
 
-                    <h5 class="fw-bold mb-3">
-                        Informasi Model
-                    </h5>
+            <header>
 
-                    <div class="mb-3">
-                        <small class="text-secondary">
-                            Metode
-                        </small>
-                        <div class="fw-semibold">
-                            Bidirectional LSTM
-                        </div>
-                    </div>
+                <h2>Petunjuk Penggunaan</h2>
 
-                    <div class="mb-3">
-                        <small class="text-secondary">
-                            Jenis Data
-                        </small>
-                        <div class="fw-semibold">
-                            Univariate
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <small class="text-secondary">
-                            Variabel
-                        </small>
-                        <div class="fw-semibold">
-                            Harga Penutupan (Close)
-                        </div>
-                    </div>
-
-                    <div>
-                        <small class="text-secondary">
-                            Input
-                        </small>
-                        <div class="fw-semibold">
-                            Data historis saham
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+            </header>
 
 
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-4">
+            <section>
 
-                    <h5 class="fw-bold mb-3">
-                        Petunjuk Penggunaan
-                    </h5>
+                <ol class="simple-steps">
 
-                    <ol class="ps-3 mb-0">
-                        <li class="mb-2">
-                            Pilih kode saham yang ingin diprediksi.
-                        </li>
+                    <li>
+                        Pilih kode saham yang ingin diprediksi.
+                    </li>
 
-                        <li class="mb-2">
-                            Unggah data historis dalam format CSV.
-                        </li>
+                    <li>
+                        Unggah data historis dalam format CSV.
+                    </li>
 
-                        <li class="mb-2">
-                            Pastikan file memiliki kolom Date
-                            dan Close.
-                        </li>
+                    <li>
+                        Pastikan file memiliki kolom Date dan Close.
+                    </li>
 
-                        <li>
-                            Tentukan horizon prediksi,
-                            kemudian tekan tombol Mulai Prediksi.
-                        </li>
-                    </ol>
+                    <li>
+                        Tentukan horizon prediksi, kemudian tekan
+                        tombol Mulai Prediksi.
+                    </li>
 
-                </div>
-            </div>
+                </ol>
+
+            </section>
 
         </div>
 
-    </div>
+    </aside>
 
-</section>
+</div>
 
 {% endblock %}

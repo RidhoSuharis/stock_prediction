@@ -1,0 +1,10 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.git/
+.vercel/
+tests/
+documentation.md
+style_planning.md
+requirements-ml.txt

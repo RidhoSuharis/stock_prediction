@@ -1,11 +1,15 @@
+
 import pandas as pd
+from werkzeug.datastructures import FileStorage
 
 
-def validate_uploaded_file(file):
+def validate_uploaded_file(
+    file: FileStorage | None,
+) -> tuple[FileStorage | None, str | None]:
     """
     Memeriksa keberadaan file dan ekstensi CSV.
     """
-    if file is None or file.filename == "":
+    if file is None or not file.filename:
         return None, "Silakan pilih file terlebih dahulu."
 
     filename = file.filename.strip()
@@ -21,14 +25,17 @@ def validate_uploaded_file(file):
     return file, None
 
 
-def validate_csv_columns(df):
+def validate_csv_columns(
+    df: pd.DataFrame,
+) -> tuple[bool, str | None]:
     """
     Memeriksa keberadaan kolom Date dan Close.
     """
     required_columns = ["Date", "Close"]
 
     missing_columns = [
-        column for column in required_columns
+        column
+        for column in required_columns
         if column not in df.columns
     ]
 
@@ -41,13 +48,16 @@ def validate_csv_columns(df):
     return True, None
 
 
-def validate_prediction_data(file):
+def validate_prediction_data(
+    file: FileStorage | None,
+) -> tuple[pd.DataFrame | None, str | None]:
     """
     Memvalidasi data historis saham untuk prediksi Bi-LSTM.
 
     Ketentuan:
     - Format CSV
     - Kolom Date dan Close
+    - Mendukung delimiter koma maupun titik koma
     - Tanggal valid dan tidak duplikat
     - Harga Close numerik dan positif
     - Minimal 30 data perdagangan valid
@@ -96,7 +106,9 @@ def validate_prediction_data(file):
     )
 
     if df["Close"].isna().any():
-        return None, "Kolom Close mengandung nilai kosong atau bukan angka."
+        return None, (
+            "Kolom Close mengandung nilai kosong atau bukan angka."
+        )
 
     if (df["Close"] <= 0).any():
         return None, "Harga Close harus lebih besar dari nol."
