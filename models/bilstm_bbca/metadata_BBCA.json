@@ -1,0 +1,22 @@
+{
+    "saham": "BBCA",
+    "model": "Bi-LSTM",
+    "window_size": 30,
+    "feature": "Close",
+    "feature_count": 1,
+    "normalization": "MinMaxScaler",
+    "feature_range": [
+        0,
+        1
+    ],
+    "architecture": {
+        "layer_1": "Bidirectional LSTM",
+        "units_1": 64,
+        "return_sequences": true,
+        "dropout_1": 0.1,
+        "layer_2": "Bidirectional LSTM",
+        "units_2": 32,
+        "dropout_2": 0.1,
+        "output": "Dense(1)"
+    }
+}
