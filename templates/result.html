@@ -11,7 +11,8 @@
 {% endblock %}
 
 {% block content %}
-{% set has_result = rows is defined and rows %}
+
+{% set has_result = predictions is defined and predictions|length > 0 %}
 
 <div class="page-header">
     {{ badge('HASIL ANALISIS') }}
@@ -25,8 +26,10 @@
 </div>
 
 {% if not has_result %}
+
     <div class="card empty-state">
         <section class="empty-state__inner">
+
             <span class="empty-state__icon">
                 {{ icon('chart-line', 30) }}
             </span>
@@ -34,220 +37,389 @@
             <h2>Belum ada hasil prediksi</h2>
 
             <p>
-                Unggah data historis terlebih dahulu untuk melihat hasil prediksi.
+                Unggah data historis terlebih dahulu
+                untuk melihat hasil prediksi.
             </p>
 
             <a href="{{ url_for('prediction') }}" class="btn">
                 Ke Halaman Prediksi
                 {{ icon('arrow-right', 18, attrs='data-icon="inline-end"') }}
             </a>
+
         </section>
     </div>
 
 {% else %}
 
-    {% set first_row = rows | first %}
-    {% set last_row = rows | last %}
+    {% set first_prediction = predictions[0] %}
 
-    {% set stock_text = stock if stock is defined and stock else '—' %}
-    {% set horizon_text = horizon if horizon is defined and horizon else '—' %}
-
-    {% set last_close_text =
-        "Rp {:,.0f}".format(last_close | float)
-        if last_close is defined and last_close is not none
-        else '—'
+    {% set change_pct =
+        ((first_prediction - last_close) / last_close * 100)
+        if last_close and last_close > 0
+        else 0
     %}
 
-    {% set prediction_text =
-        "Rp {:,.0f}".format(last_row.close | float)
-        if last_row.close is defined and last_row.close is not none
-        else '—'
+    {% set change_positive = change_pct >= 0 %}
+
+    {% set change_class =
+        'text-positive' if change_positive else 'text-negative'
     %}
 
     {% set change_text =
-        "{:+.2f}".format(change_pct | float) | replace('.', ',')
-        if change_pct is defined and change_pct is not none
-        else '—'
+        "{:+.2f}".format(change_pct) | replace('.', ',')
     %}
 
-    {% set change_positive =
-        change_pct is defined and change_pct is not none and change_pct >= 0
-    %}
 
-    {% set change_class =
-        'text-positive' if change_positive
-        else ('text-negative' if change_pct is defined and change_pct is not none else '')
-    %}
-
-    <!-- Informasi prediksi -->
+    <!-- INFORMASI PREDIKSI -->
     <div class="info-grid">
 
         <div class="card fact-card" data-size="sm">
             <section>
-                {{ info_row('Kode Saham', stock_text) }}
+                {{ info_row('Kode Saham', stock) }}
             </section>
         </div>
 
         <div class="card fact-card" data-size="sm">
             <section>
-                {{ info_row('Periode Data', first_row.date ~ ' – ' ~ last_row.date) }}
+                {{ info_row('Data Historis', total_data ~ ' hari perdagangan') }}
             </section>
         </div>
 
         <div class="card fact-card" data-size="sm">
             <section>
-                {{ info_row('Horizon Prediksi', horizon_text) }}
+                {{ info_row('Tanggal Terakhir', last_date) }}
             </section>
         </div>
 
         <div class="card fact-card" data-size="sm">
             <section>
-                {{ info_row('Variabel', 'Close') }}
+                {{ info_row('Horizon Prediksi', horizon ~ ' hari') }}
             </section>
         </div>
 
     </div>
 
-    <!-- Ringkasan hasil -->
+
+    <!-- RINGKASAN HASIL -->
     <div class="summary-grid">
 
+        <!-- HARGA TERAKHIR -->
         <div class="card summary-card" data-size="sm">
             <section>
-                <p class="summary-label">Harga Terakhir</p>
-                <p class="summary-value">{{ last_close_text }}</p>
-                <p class="summary-note">
-                    Nilai penutupan terakhir dari data masukan.
-                </p>
-            </section>
-        </div>
 
-        <div class="card summary-card" data-size="sm">
-            <section>
                 <p class="summary-label">
-                    Prediksi Hari ke-{{ horizon_text }}
+                    Harga Close Terakhir
                 </p>
 
-                <p class="summary-value">{{ prediction_text }}</p>
+                <p class="summary-value">
+                    Rp {{ "{:,.0f}".format(last_close) }}
+                </p>
 
                 <p class="summary-note">
-                    Estimasi model untuk periode berikutnya.
+                    Harga penutupan terakhir dari data yang diunggah.
                 </p>
+
             </section>
         </div>
 
+
+        <!-- HARGA PREDIKSI -->
         <div class="card summary-card" data-size="sm">
             <section>
-                <p class="summary-label">Perubahan</p>
+
+                <p class="summary-label">
+                    Prediksi Harga Close Hari ke-1
+                </p>
+
+                <p class="summary-value">
+                    Rp {{ "{:,.0f}".format(first_prediction) }}
+                </p>
+
+                <p class="summary-note">
+                    Estimasi harga penutupan pada hari perdagangan berikutnya.
+                </p>
+
+            </section>
+        </div>
+
+
+        <!-- PERUBAHAN HARGA -->
+        <div class="card summary-card" data-size="sm">
+            <section>
+
+                <p class="summary-label">
+                    Perubahan Prediksi Hari ke-1
+                </p>
 
                 <p class="summary-value {{ change_class }}">
-                    {{ change_text }}{% if change_text != '—' %}%{% endif %}
+                    {{ change_text }}%
                 </p>
 
                 <p class="summary-note">
-                    Estimasi model, bukan rekomendasi investasi.
+                    Perubahan terhadap harga Close terakhir.
                 </p>
+
             </section>
         </div>
 
     </div>
+
 
     <div class="detail-stack">
 
-        <!-- Grafik -->
+        <!-- GRAFIK -->
         <div class="card detail-card">
+
             <header>
                 <h2>Grafik Harga Saham</h2>
+
                 <p>
-                    Visualisasi harga aktual dan hasil prediksi.
+                    Visualisasi harga historis dan
+                    {{ horizon }} hari hasil prediksi.
                 </p>
             </header>
 
             <section>
-                <div id="prediction-chart" class="chart-placeholder">
-                    <div class="chart-placeholder__content">
-                        <strong>Grafik Prediksi</strong>
-                        <p>
-                            Grafik akan tersedia setelah visualisasi
-                            dihubungkan dengan data hasil prediksi.
-                        </p>
-                    </div>
+
+                <div id="prediction-chart"
+                     style="width: 100%; min-height: 400px;">
                 </div>
+
             </section>
+
         </div>
 
-        <!-- Tabel prediksi -->
+
+        <!-- TABEL PREDIKSI -->
         <div class="card detail-card">
+
             <header>
                 <h2>Rincian Hasil Prediksi</h2>
+
                 <p>
-                    Tabel estimasi untuk {{ horizon_text }}
-                    hari perdagangan berikutnya.
+                    Estimasi harga penutupan untuk
+                    {{ horizon }} hari perdagangan ke depan.
                 </p>
             </header>
 
             <section>
+
                 <div class="table-container">
+
                     <table class="table">
+
                         <thead>
                             <tr>
-                                <th scope="col">Hari</th>
-                                <th scope="col">Tanggal</th>
+                                <th scope="col">Hari Perdagangan</th>
                                 <th scope="col">Prediksi Close</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {% for row in rows %}
+
+                            {% for prediction in predictions %}
+
                             <tr>
-                                <td>{{ loop.index }}</td>
-                                <td>{{ row.date }}</td>
+                                <td>Hari ke-{{ loop.index }}</td>
+
                                 <td>
-                                    Rp {{ "{:,.0f}".format(row.close | float) }}
+                                    Rp {{ "{:,.0f}".format(prediction) }}
                                 </td>
                             </tr>
+
                             {% endfor %}
+
                         </tbody>
+
                     </table>
+
                 </div>
+
             </section>
+
         </div>
 
     </div>
 
-    <!-- Disclaimer -->
+
+    <!-- DISCLAIMER -->
     <div class="alert">
+
         {{ icon('info', 20) }}
 
         <h2>Catatan</h2>
 
         <section>
+
             <p>
-                Seluruh angka merupakan estimasi model dan bukan
+                Hasil prediksi merupakan estimasi yang dihasilkan
+                oleh model Bi-LSTM berdasarkan data historis yang
+                diunggah. Prediksi beberapa hari ke depan menggunakan
+                metode Recursive Multi-Step Forecasting, yaitu
+                hasil prediksi sebelumnya digunakan sebagai input
+                untuk prediksi berikutnya. Hasil ini bukan
                 rekomendasi untuk membeli atau menjual saham.
             </p>
+
         </section>
+
     </div>
 
-    <!-- Tombol aksi -->
+
+    <!-- TOMBOL AKSI -->
     <div class="action-row">
 
         <a href="{{ url_for('prediction') }}"
            class="btn"
            data-variant="outline">
+
             Kembali ke Prediksi
+
         </a>
 
-        <button class="btn"
-                type="button"
-                disabled
-                title="Unduh hasil belum tersedia pada tahap prototipe.">
-
-            {{ icon('download', 18, attrs='data-icon="inline-start"') }}
-
-            Unduh Hasil
-        </button>
-
     </div>
+
+{% endif %}
+
+
+<!-- GRAFIK PLOTLY -->
+{% if has_result %}
+
+<script src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
+
+<script id="chart-data" type="application/json">
+{
+    "historicalDates": {{ historical_dates | tojson }},
+    "historicalPrices": {{ historical_prices | tojson }},
+    "predictions": {{ predictions | tojson }}
+}
+</script>
+
+<!-- JavaScript untuk visualisasi -->
+<script>
+    const chartData = JSON.parse(
+        document.getElementById("chart-data").textContent
+    );
+
+    const historicalDates = chartData.historicalDates;
+    const historicalPrices = chartData.historicalPrices;
+    const predictions = chartData.predictions;
+
+    // Kode visualisasi Plotly
+</script>
+
+<script>
+
+    // Label hari prediksi
+    const predictionDates = predictions.map(
+        (_, index) => `Hari ke-${index + 1}`
+    );
+
+    // Grafik harga historis
+    const historicalTrace = {
+
+        x: historicalDates,
+        y: historicalPrices,
+
+        type: 'scatter',
+        mode: 'lines',
+
+        name: 'Harga Close Historis',
+
+        line: {
+            color: '#2878D0',
+            width: 2.5
+        }
+
+    };
+
+
+    // Grafik harga prediksi
+    const predictionTrace = {
+
+        x: [
+            historicalDates[historicalDates.length - 1],
+            ...predictionDates
+        ],
+
+        y: [
+            historicalPrices[historicalPrices.length - 1],
+            ...predictions
+        ],
+
+        type: 'scatter',
+        mode: 'lines+markers',
+
+        name: 'Prediksi Bi-LSTM',
+
+        line: {
+            color: '#16A36A',
+            width: 2.5,
+            dash: 'dash'
+        },
+
+        marker: {
+            size: 9
+        }
+
+    };
+
+
+    // Konfigurasi grafik
+    const layout = {
+
+        title: {
+            text: 'Pergerakan Harga Saham {{ stock }}',
+            font: {
+                size: 17
+            }
+        },
+
+        xaxis: {
+            title: 'Tanggal / Hari Prediksi',
+            showgrid: false,
+            type: 'category'
+        },
+
+        yaxis: {
+            title: 'Harga Close (Rp)',
+            tickformat: ',.0f',
+            gridcolor: '#E5E7EB'
+        },
+
+        hovermode: 'x unified',
+
+        legend: {
+            orientation: 'h',
+            y: -0.25
+        },
+
+        margin: {
+            l: 75,
+            r: 25,
+            t: 60,
+            b: 80
+        },
+
+        paper_bgcolor: 'white',
+        plot_bgcolor: 'white'
+
+    };
+
+
+    // Menampilkan grafik
+    Plotly.newPlot(
+        'prediction-chart',
+        [historicalTrace, predictionTrace],
+        layout,
+        {
+            responsive: true,
+            displaylogo: false
+        }
+    );
+
+</script>
+
 
 {% endif %}
 
