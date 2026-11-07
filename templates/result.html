@@ -1,14 +1,8 @@
-
 {% extends "base.html" %}
 {% from "components/icon.html" import icon %}
 {% from "components/macros.html" import badge, info_row %}
 
 {% block title %}Hasil Prediksi | Prediksi Saham{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet"
-      href="{{ url_for('static', filename='css/result_style.css') }}">
-{% endblock %}
 
 {% block content %}
 
@@ -62,7 +56,7 @@
     {% set change_positive = change_pct >= 0 %}
 
     {% set change_class =
-        'text-positive' if change_positive else 'text-negative'
+        'change-pill--up' if change_positive else 'change-pill--down'
     %}
 
     {% set change_text =
@@ -70,7 +64,6 @@
     %}
 
 
-    <!-- INFORMASI PREDIKSI -->
     <div class="info-grid">
 
         <div class="card fact-card" data-size="sm">
@@ -100,10 +93,8 @@
     </div>
 
 
-    <!-- RINGKASAN HASIL -->
     <div class="summary-grid">
 
-        <!-- HARGA TERAKHIR -->
         <div class="card summary-card" data-size="sm">
             <section>
 
@@ -123,8 +114,7 @@
         </div>
 
 
-        <!-- HARGA PREDIKSI -->
-        <div class="card summary-card" data-size="sm">
+        <div class="card summary-card summary-card--highlight" data-size="sm">
             <section>
 
                 <p class="summary-label">
@@ -143,7 +133,6 @@
         </div>
 
 
-        <!-- PERUBAHAN HARGA -->
         <div class="card summary-card" data-size="sm">
             <section>
 
@@ -151,8 +140,11 @@
                     Perubahan Prediksi Hari ke-1
                 </p>
 
-                <p class="summary-value {{ change_class }}">
-                    {{ change_text }}%
+                <p class="summary-value">
+                    <span class="change-pill {{ change_class }}">
+                        {{ icon('chart-line', 16) }}
+                        {{ change_text }}%
+                    </span>
                 </p>
 
                 <p class="summary-note">
@@ -167,11 +159,13 @@
 
     <div class="detail-stack">
 
-        <!-- GRAFIK -->
         <div class="card detail-card">
 
             <header>
-                <h2>Grafik Harga Saham</h2>
+                <h2 class="card-title">
+                    {{ icon('chart-line', 18) }}
+                    Grafik Harga Saham
+                </h2>
 
                 <p>
                     Visualisasi harga historis dan
@@ -181,8 +175,10 @@
 
             <section>
 
-                <div id="prediction-chart"
-                     style="width: 100%; min-height: 400px;">
+                <div class="chart-frame">
+                    <div id="prediction-chart"
+                         style="width: 100%; min-height: 400px;">
+                    </div>
                 </div>
 
             </section>
@@ -190,11 +186,13 @@
         </div>
 
 
-        <!-- TABEL PREDIKSI -->
         <div class="card detail-card">
 
             <header>
-                <h2>Rincian Hasil Prediksi</h2>
+                <h2 class="card-title">
+                    {{ icon('database', 18) }}
+                    Rincian Hasil Prediksi
+                </h2>
 
                 <p>
                     Estimasi harga penutupan untuk
@@ -206,7 +204,7 @@
 
                 <div class="table-container">
 
-                    <table class="table">
+                    <table class="table result-table">
 
                         <thead>
                             <tr>
@@ -242,14 +240,17 @@
     </div>
 
 
-    <!-- DISCLAIMER -->
-    <div class="alert">
+    <div class="alert disclaimer">
 
-        {{ icon('info', 20) }}
+        {{ icon('triangle-alert', 20) }}
 
         <h2>Catatan</h2>
 
         <section>
+
+            <p class="disclaimer__lead">
+                Seluruh angka merupakan estimasi model, bukan rekomendasi investasi.
+            </p>
 
             <p>
                 Hasil prediksi merupakan estimasi yang dihasilkan
@@ -266,7 +267,6 @@
     </div>
 
 
-    <!-- TOMBOL AKSI -->
     <div class="action-row">
 
         <a href="{{ url_for('prediction') }}"
@@ -282,7 +282,6 @@
 {% endif %}
 
 
-<!-- GRAFIK PLOTLY -->
 {% if has_result %}
 
 <script src="https://cdn.plot.ly/plotly-3.1.0.min.js"></script>
@@ -295,7 +294,6 @@
 }
 </script>
 
-<!-- JavaScript untuk visualisasi -->
 <script>
     const chartData = JSON.parse(
         document.getElementById("chart-data").textContent
@@ -305,17 +303,10 @@
     const historicalPrices = chartData.historicalPrices;
     const predictions = chartData.predictions;
 
-    // Kode visualisasi Plotly
-</script>
-
-<script>
-
-    // Label hari prediksi
     const predictionDates = predictions.map(
         (_, index) => `Hari ke-${index + 1}`
     );
 
-    // Grafik harga historis
     const historicalTrace = {
 
         x: historicalDates,
@@ -327,14 +318,12 @@
         name: 'Harga Close Historis',
 
         line: {
-            color: '#2878D0',
+            color: '#0369a1',
             width: 2.5
         }
 
     };
 
-
-    // Grafik harga prediksi
     const predictionTrace = {
 
         x: [
@@ -353,26 +342,31 @@
         name: 'Prediksi Bi-LSTM',
 
         line: {
-            color: '#16A36A',
+            color: '#059669',
             width: 2.5,
             dash: 'dash'
         },
 
         marker: {
-            size: 9
+            size: 9,
+            color: '#059669'
         }
 
     };
 
-
-    // Konfigurasi grafik
     const layout = {
 
         title: {
             text: 'Pergerakan Harga Saham {{ stock }}',
             font: {
-                size: 17
+                size: 17,
+                color: '#1e293b'
             }
+        },
+
+        font: {
+            family: 'Plus Jakarta Sans, system-ui, sans-serif',
+            color: '#475569'
         },
 
         xaxis: {
@@ -384,7 +378,7 @@
         yaxis: {
             title: 'Harga Close (Rp)',
             tickformat: ',.0f',
-            gridcolor: '#E5E7EB'
+            gridcolor: '#e2e8f0'
         },
 
         hovermode: 'x unified',
@@ -401,13 +395,11 @@
             b: 80
         },
 
-        paper_bgcolor: 'white',
-        plot_bgcolor: 'white'
+        paper_bgcolor: '#ffffff',
+        plot_bgcolor: '#ffffff'
 
     };
 
-
-    // Menampilkan grafik
     Plotly.newPlot(
         'prediction-chart',
         [historicalTrace, predictionTrace],
@@ -419,7 +411,6 @@
     );
 
 </script>
-
 
 {% endif %}
 
