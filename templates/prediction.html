@@ -57,6 +57,7 @@
                 method="POST"
                 enctype="multipart/form-data"
                 id="prediction-form"
+                novalidate
             >
 
                 <div class="form-fields">
@@ -155,22 +156,29 @@
                         </div>
 
 
-                        <p>
-                            Format: CSV. Kolom wajib: Date dan Close.
-                        </p>
+                        <ul class="upload-rules">
 
-                        <p>
-                            Minimal 30 hari perdagangan valid.
-                        </p>
+                            <li>
+                                {{ icon('circle-check', 16) }}
+                                Format: CSV. Kolom wajib: Date dan Close.
+                            </li>
 
-                        <p class="text-muted text-small">
-                            Ukuran maksimal file: 5 MB.
-                        </p>
+                            <li>
+                                {{ icon('circle-check', 16) }}
+                                Minimal 30 hari perdagangan valid.
+                            </li>
+
+                            <li>
+                                {{ icon('circle-check', 16) }}
+                                Ukuran maksimal file: 5 MB.
+                            </li>
+
+                        </ul>
 
 
                         <p
                             id="file-hint"
-                            class="text-muted text-small"
+                            class="file-hint"
                             aria-live="polite"
                         ></p>
 
@@ -378,5 +386,34 @@
     </aside>
 
 </div>
+
+
+<!-- POPUP: DATA KURANG DARI 30 BARIS -->
+<dialog id="csv-row-dialog" class="csv-dialog">
+    <div class="csv-dialog__inner">
+
+        <div class="csv-dialog__icon">
+            {{ icon('circle-alert', 26) }}
+        </div>
+
+        <h2>Data Tidak Mencukupi</h2>
+
+        <p>
+            File yang diunggah hanya memiliki
+            <strong><span id="dialog-row-count">0</span> baris</strong>
+            data historis.
+        </p>
+
+        <p>
+            Minimal diperlukan <strong>30 hari</strong>
+            perdagangan valid untuk menjalankan prediksi.
+        </p>
+
+        <button id="dialog-close" class="btn" data-variant="outline">
+            Mengerti, Tutup
+        </button>
+
+    </div>
+</dialog>
 
 {% endblock %}

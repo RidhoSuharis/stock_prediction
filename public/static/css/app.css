@@ -637,6 +637,48 @@ a.btn[data-variant="ghost"] {
   background: var(--secondary);
 }
 
+.upload-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+  list-style: none;
+}
+
+.upload-rules li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.upload-rules .icon {
+  color: var(--accent-foreground);
+}
+
+.file-hint {
+  display: inline-flex;
+  align-self: flex-start;
+  max-width: 100%;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-foreground);
+  font-size: 0.85rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.file-hint:empty {
+  display: none;
+}
+
 .field-error {
   margin: 0;
   color: var(--destructive);
@@ -652,6 +694,22 @@ a.btn[data-variant="ghost"] {
 .field[data-invalid] .upload-box {
   border-color: var(--destructive);
   background: color-mix(in oklab, var(--destructive) 5%, var(--background));
+}
+
+.field[data-invalid] .upload-box:hover,
+.field[data-invalid] .upload-box:focus-within {
+  border-color: var(--destructive);
+  background: color-mix(in oklab, var(--destructive) 8%, var(--background));
+}
+
+.field[data-invalid] :focus-visible {
+  outline-color: var(--destructive);
+}
+
+.field[data-invalid] select.select,
+.field[data-invalid] select.select:focus {
+  border-color: var(--destructive);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--destructive) 15%, transparent);
 }
 
 .info-row {
@@ -808,6 +866,79 @@ a.btn[data-variant="ghost"] {
   margin-top: 8px;
 }
 
+.fact-card {
+  background: var(--muted);
+}
+
+.summary-card--highlight {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.summary-card--highlight .summary-label,
+.summary-card--highlight .summary-note {
+  color: var(--primary-foreground);
+}
+
+.change-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.change-pill--up {
+  background: color-mix(in oklab, var(--positive) 12%, var(--background));
+  color: var(--positive);
+}
+
+.change-pill--down {
+  background: color-mix(in oklab, var(--destructive) 10%, var(--background));
+  color: var(--destructive);
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+}
+
+.card-title .icon {
+  color: var(--primary);
+}
+
+.chart-frame {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--background);
+}
+
+.result-table td:last-child,
+.result-table th:last-child {
+  text-align: right;
+}
+
+.result-table td:last-child {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.disclaimer {
+  background: var(--muted);
+}
+
+.disclaimer__lead {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
 /* Tentang ----------------------------------------------------------------- */
 .page-hero {
   padding: 40px;
@@ -913,6 +1044,61 @@ a.btn[data-variant="ghost"] {
 .step p {
   margin: 0;
   color: var(--muted-foreground);
+}
+
+/* Dialog popup ------------------------------------------------------------ */
+.csv-dialog {
+  position: fixed;
+  inset: 0;
+  height: fit-content;
+  margin: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 0;
+  max-width: 400px;
+  width: calc(100% - 32px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.csv-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.csv-dialog__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.csv-dialog__icon {
+  display: inline-flex;
+  width: 56px;
+  height: 56px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--destructive) 10%, var(--background));
+  color: var(--destructive);
+}
+
+.csv-dialog h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.csv-dialog p {
+  margin: 0;
+  max-width: 30ch;
+  color: var(--muted-foreground);
+  font-size: 0.925rem;
+}
+
+.csv-dialog .btn {
+  margin-top: 8px;
 }
 
 /* Alert penyempurnaan ----------------------------------------------------- */
