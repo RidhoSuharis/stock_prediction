@@ -1,4 +1,6 @@
 
+import io
+
 import pandas as pd
 from werkzeug.datastructures import FileStorage
 
@@ -71,10 +73,14 @@ def validate_prediction_data(
 
     # 2. Membaca CSV
     try:
+        raw = file.read()
+        first_line = raw.split(b"\n")[0].strip().lower()
+        skip = 1 if first_line.startswith(b"sep=") else 0
         df = pd.read_csv(
-            file,
+            io.BytesIO(raw),
             sep=None,
-            engine="python"
+            engine="python",
+            skiprows=skip,
         )
 
     except Exception:
