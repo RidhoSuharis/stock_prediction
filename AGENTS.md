@@ -46,6 +46,7 @@ public/static/
   css/app.css                       Project layout and components
   js/main.js                        Form interactions (vanilla JS)
 tests/                              unittest suite
+change_log/                         Release notes, one file per version
 ```
 
 Note: in Flask the static URL `/static/...` maps to `public/static/...` on disk. Use `url_for('static', filename='css/app.css')` in templates.
@@ -205,3 +206,39 @@ Definition of done for UI work:
 - Keyboard focus is visible on buttons, links, inputs, and selects.
 - Text contrast is at least 4.5:1.
 - The page works at 375px width without horizontal scrolling.
+
+## 8. Changelog
+
+Release notes are stored in `change_log/v<major>/v<version>.md`, for example `change_log/v1/v1.0.0.md`. Start from `change_log/TEMPLATE.md` and follow this format:
+
+```md
+# vX.Y.Z
+
+Ringkasan singkat rilis.
+
+**Tanggal Rilis:** DD Bulan YYYY
+
+## Fitur
+
+-
+
+## Perbaikan
+
+-
+
+## Teknis
+
+-
+
+## Catatan
+
+-
+```
+
+Rules:
+
+1. Write the changelog in Indonesian.
+2. Group entries under the four headings; do not list commits, branches, or internal ticket names.
+3. Include only user-visible changes and meaningful technical changes. Keep it short.
+4. Create a new file for each release. Do not rewrite a published release note.
+5. Keep `change_log/TEMPLATE.md` as the source for new release files.
