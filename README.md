@@ -101,6 +101,160 @@ Buka `http://127.0.0.1:5000` di browser.
 
 Model, scaler, dan metadata untuk saham yang telah selesai dilatih sudah disertakan di repositori, sehingga tidak perlu melakukan training ulang. TensorFlow akan memuat model saat prediksi pertama dijalankan sehingga proses awal bisa terasa lebih lama.
 
+## Deploy dengan Docker
+
+Bagian ini untuk deploy production di VPS Ubuntu 24.04. Container menjalankan aplikasi dengan Gunicorn di port `8000`, dan hanya dapat diakses dari `127.0.0.1` sehingga lalu lintas publik harus melewati Nginx di host.
+
+### Prasyarat VPS
+
+- Docker Engine dan Docker Compose plugin.
+- Nginx dan Certbot di host.
+- Repositori sudah di-clone, misalnya di `/opt/stockpredict`.
+
+### Instalasi Docker
+
+```bash
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER
+```
+
+Logout lalu login kembali agar grup `docker` berlaku, kemudian cek dengan `docker run --rm hello-world`.
+
+### Buka Port Firewall
+
+Di panel VPS (IDCloudHost), buka port `22` (SSH), `80` (HTTP), dan `443` (HTTPS). Tanpa port `80` dan `443`, Nginx tidak dapat diakses dari internet. Jika memakai ufw di host:
+
+```bash
+sudo ufw allow OpenSSH
+sudo ufw allow 80/tcp
+sudo ufw allow 443/tcp
+sudo ufw enable
+```
+
+### Build dan Jalankan
+
+```bash
+cd /opt/stockpredict
+docker compose build
+docker compose up -d
+docker compose ps
+```
+
+Status service harus `healthy`. Cek halaman dari host:
+
+```bash
+curl -I http://127.0.0.1:8000/
+curl -I http://127.0.0.1:8000/prediksi
+curl -I http://127.0.0.1:8000/tentang
+curl -I http://127.0.0.1:8000/hasil
+```
+
+### Update Kode
+
+```bash
+cd /opt/stockpredict
+git pull
+docker compose up -d --build
+```
+
+### Lihat Log
+
+```bash
+docker compose logs -f web
+docker compose logs --tail 200 web
+```
+
+### Ganti Versi
+
+Untuk kembali ke versi lain dari git tag (setelah tag dibuat, misalnya `v1.0.0`, dengan `git tag`):
+
+```bash
+cd /opt/stockpredict
+git fetch --tags
+git checkout v1.0.0
+docker compose up -d --build
+```
+
+Untuk menjalankan image yang sudah di-build dengan tag tertentu, atur `STOCKPREDICT_IMAGE` di file `.env` pada folder proyek:
+
+```bash
+STOCKPREDICT_IMAGE=<registry-user>/stockpredict:1.0.0
+```
+
+Lalu jalankan `docker compose up -d`. Compose memakai image tersebut tanpa build ulang.
+
+### Catatan Build di VPS 2 GB RAM
+
+Instalasi TensorFlow membutuhkan memori besar saat `docker compose build`. Pada VPS 2 GB RAM, tambahkan swap 2 GB sebelum build:
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+```
+
+Jika VPS tetap kehabisan memori (OOM), build image di komputer lokal lalu kirim ke registry:
+
+```bash
+docker build --platform linux/amd64 -t <registry-user>/stockpredict:1.0.0 .
+docker push <registry-user>/stockpredict:1.0.0
+```
+
+Di VPS, tarik image tersebut dan atur `STOCKPREDICT_IMAGE` seperti pada bagian Ganti Versi:
+
+```bash
+docker pull <registry-user>/stockpredict:1.0.0
+docker compose up -d
+```
+
+### Konfigurasi Nginx di Host
+
+Simpan sebagai `/etc/nginx/sites-available/stockpredict`:
+
+```nginx
+server {
+    listen 80;
+    server_name stockpredict.example.com;
+
+    client_max_body_size 5M;
+
+    location /static/ {
+        alias /opt/stockpredict/public/static/;
+        expires 7d;
+        access_log off;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+    }
+}
+```
+
+Aktifkan dan uji konfigurasi:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/stockpredict /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+### HTTPS dengan Certbot
+
+Ganti `stockpredict.example.com` dengan domain yang sudah diarahkan ke IP VPS:
+
+```bash
+sudo apt install -y certbot python3-certbot-nginx
+sudo certbot --nginx -d stockpredict.example.com
+sudo certbot renew --dry-run
+```
+
 ## Halaman Aplikasi
 
 | URL | Keterangan |

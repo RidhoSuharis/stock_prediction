@@ -1,0 +1,16 @@
+.git
+.venv
+__pycache__
+*.pyc
+.claude
+.vercel
+tests
+*.md
+.env*
+.pytest_cache
+tatus
+static
+*.log
+.dockerignore
+Dockerfile
+docker-compose.yml
