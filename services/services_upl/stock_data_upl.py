@@ -96,11 +96,22 @@ def validate_prediction_data(
     df = df[["Date", "Close"]].copy()
 
     # 5. Validasi tanggal
-    df["Date"] = pd.to_datetime(
-        df["Date"],
-        errors="coerce",
-        dayfirst=True
-    )
+    raw_date = df["Date"].astype(str).str.strip()
+    parsed_date = pd.Series(pd.NaT, index=df.index)
+
+    for date_format in ("%d/%m/%Y", "%d/%m/%y"):
+        pending = parsed_date.isna()
+
+        if not pending.any():
+            break
+
+        parsed_date[pending] = pd.to_datetime(
+            raw_date[pending],
+            errors="coerce",
+            format=date_format,
+        )
+
+    df["Date"] = parsed_date
 
     if df["Date"].isna().any():
         return None, "Format tanggal tidak valid atau kosong."
