@@ -27,6 +27,15 @@
 <!-- FLASH MESSAGES -->
 {{ flash_messages() }}
 
+{% if error %}
+<div class="flash-stack">
+    <div class="alert" data-variant="destructive" role="alert">
+        {{ icon('triangle-alert', 20) }}
+        <section><p>{{ error }}</p></section>
+    </div>
+</div>
+{% endif %}
+
 
 <!-- ==========================================
      FORM LAYOUT
