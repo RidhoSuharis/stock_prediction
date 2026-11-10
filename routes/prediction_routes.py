@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, redirect, url_for
 
 from services.services_upl.stock_data_upl import (
     validate_prediction_data
@@ -12,11 +12,18 @@ from services.services_prediction.prediction_registry import (
 prediction_bp = Blueprint('prediction', __name__)
 
 
-def render_prediction_error(message, status):
+def render_prediction_error(message, status, stock=None, horizon=None):
     return render_template(
         "prediction.html",
-        error=message
+        error=message,
+        selected_stock=stock,
+        selected_horizon=horizon
     ), status
+
+
+@prediction_bp.route('/proses-prediksi', methods=['GET'])
+def redirect_prediction():
+    return redirect(url_for('prediction'))
 
 
 @prediction_bp.route('/proses-prediksi', methods=['POST'])
@@ -39,7 +46,8 @@ def process_prediction():
     if stock_service is None:
         return render_prediction_error(
             f"Model untuk saham {stock} belum tersedia.",
-            400
+            400,
+            stock=stock
         )
 
     # =====================================
@@ -50,7 +58,11 @@ def process_prediction():
         horizon = int(horizon)
 
     except (TypeError, ValueError):
-        return render_prediction_error("Horizon prediksi tidak valid.", 400)
+        return render_prediction_error(
+            "Horizon prediksi tidak valid.",
+            400,
+            stock=stock
+        )
 
     predictor = stock_service["predictors"].get(horizon)
 
@@ -58,7 +70,9 @@ def process_prediction():
         return render_prediction_error(
             f"Horizon {horizon} hari belum tersedia "
             f"untuk saham {stock}.",
-            400
+            400,
+            stock=stock,
+            horizon=horizon
         )
 
     # =====================================
@@ -68,7 +82,12 @@ def process_prediction():
     df, error = validate_prediction_data(csv_file)
 
     if error:
-        return render_prediction_error(error, 400)
+        return render_prediction_error(
+            error,
+            400,
+            stock=stock,
+            horizon=horizon
+        )
 
     try:
 
@@ -157,5 +176,7 @@ def process_prediction():
         return render_prediction_error(
             "Terjadi kesalahan saat melakukan prediksi. "
             "Silakan periksa data dan konfigurasi model.",
-            500
+            500,
+            stock=stock,
+            horizon=horizon
         )
