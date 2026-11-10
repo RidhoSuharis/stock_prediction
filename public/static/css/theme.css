@@ -1,8 +1,3 @@
-/* ==========================================================================
-   StockPredict — Design tokens (Basecoat / shadcn-compatible)
-   Light mode only. Dimuat setelah stylesheet Basecoat.
-   ========================================================================== */
-
 @font-face {
   font-family: "Plus Jakarta Sans";
   font-style: normal;
@@ -14,9 +9,8 @@
 :root {
   color-scheme: light;
 
-  /* Surface */
   --background: oklch(1 0 0);
-  --foreground: oklch(0.208 0.042 265.755);        /* slate-900 */
+  --foreground: oklch(0.208 0.042 265.755);
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.208 0.042 265.755);
@@ -24,40 +18,31 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.208 0.042 265.755);
 
-  /* Primary — sky */
-  --primary: oklch(0.5 0.134 242.749);            /* sky-700 #0369a1 */
-  --primary-foreground: oklch(0.985 0.006 236.62); /* near-white */
+  --primary: oklch(0.5 0.134 242.749);
+  --primary-foreground: oklch(0.985 0.006 236.62);
 
-  /* Secondary — netral sejuk, dipakai untuk tombol sekunder & chip */
-  --secondary: oklch(0.968 0.007 247.896);        /* slate-100 */
+  --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
 
-  /* Muted — latar panel, teks pendukung */
-  --muted: oklch(0.984 0.003 247.858);            /* slate-50 */
-  --muted-foreground: oklch(0.554 0.046 257.417); /* slate-500 */
+  --muted: oklch(0.984 0.003 247.858);
+  --muted-foreground: oklch(0.554 0.046 257.417);
 
-  /* Accent — sorotan sky muda (hover, badge, highlight) */
-  --accent: oklch(0.977 0.013 236.62);            /* sky-50 */
-  --accent-foreground: oklch(0.5 0.134 242.749);  /* sky-700 */
+  --accent: oklch(0.977 0.013 236.62);
+  --accent-foreground: oklch(0.5 0.134 242.749);
 
-  /* Destructive — penurunan harga / error */
-  --destructive: oklch(0.577 0.245 27.325);       /* red-600 */
+  --destructive: oklch(0.577 0.245 27.325);
 
-  /* Border & focus */
-  --border: oklch(0.929 0.013 255.508);           /* slate-200 */
+  --border: oklch(0.929 0.013 255.508);
   --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.685 0.169 237.323);             /* sky-500 */
+  --ring: oklch(0.685 0.169 237.323);
 
-  /* Radius */
   --radius: 0.65rem;
 
-  /* Warna semantik proyek (bukan token Basecoat) */
-  --positive: oklch(0.596 0.145 163.225);         /* emerald-600 */
+  --positive: oklch(0.596 0.145 163.225);
   --positive-foreground: oklch(0.982 0.018 155.826);
-  --warning: oklch(0.666 0.179 58.318);           /* amber-500 */
+  --warning: oklch(0.666 0.179 58.318);
   --grid-line: oklch(0.929 0.013 255.508);
 
-  /* Font — Plus Jakarta Sans (self-host), fallback sistem tanpa CDN font */
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system,
                "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   --font-heading: var(--font-sans);

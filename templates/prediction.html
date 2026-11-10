@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% from "components/icon.html" import icon %}
 {% from "components/macros.html" import badge, flash_messages, info_row %}
@@ -7,9 +6,6 @@
 
 {% block content %}
 
-<!-- ==========================================
-     PAGE HEADER
-=========================================== -->
 <div class="page-header">
 
     {{ badge('STOCK PREDICTION') }}
@@ -23,20 +19,19 @@
 
 </div>
 
-
-<!-- FLASH MESSAGES -->
 {{ flash_messages() }}
 
+{% if error %}
+<div class="flash-stack">
+    <div class="alert" data-variant="destructive" role="alert">
+        {{ icon('triangle-alert', 20) }}
+        <section><p>{{ error }}</p></section>
+    </div>
+</div>
+{% endif %}
 
-<!-- ==========================================
-     FORM LAYOUT
-=========================================== -->
 <div class="form-layout">
 
-
-    <!-- ==========================================
-         FORM PREDIKSI
-    =========================================== -->
     <div class="card form-card">
 
         <header>
@@ -48,7 +43,6 @@
             </p>
 
         </header>
-
 
         <section>
 
@@ -62,10 +56,6 @@
 
                 <div class="form-fields">
 
-
-                    <!-- ==================================
-                         1. PILIH SAHAM
-                    =================================== -->
                     <div class="field">
 
                         <label for="stock">
@@ -79,27 +69,27 @@
                             required
                         >
 
-                            <option value="" selected disabled>
+                            <option value="" disabled{% if not selected_stock %} selected{% endif %}>
                                 Pilih kode saham
                             </option>
 
-                            <option value="ANTM">
+                            <option value="ANTM"{% if selected_stock == 'ANTM' %} selected{% endif %}>
                                 ANTM — Aneka Tambang
                             </option>
 
-                            <option value="BBCA">
+                            <option value="BBCA"{% if selected_stock == 'BBCA' %} selected{% endif %}>
                                 BBCA — Bank Central Asia
                             </option>
 
-                            <option value="BBRI">
+                            <option value="BBRI"{% if selected_stock == 'BBRI' %} selected{% endif %}>
                                 BBRI — Bank Rakyat Indonesia
                             </option>
 
-                            <option value="BMRI">
+                            <option value="BMRI"{% if selected_stock == 'BMRI' %} selected{% endif %}>
                                 BMRI — Bank Mandiri
                             </option>
 
-                            <option value="TLKM">
+                            <option value="TLKM"{% if selected_stock == 'TLKM' %} selected{% endif %}>
                                 TLKM — Telkom Indonesia
                             </option>
 
@@ -112,16 +102,11 @@
 
                     </div>
 
-
-                    <!-- ==================================
-                         2. UPLOAD CSV
-                    =================================== -->
                     <div class="field" id="csv-field">
 
                         <label for="csv_file">
                             2. Unggah Data Historis
                         </label>
-
 
                         <div class="upload-box">
 
@@ -131,17 +116,14 @@
 
                             </div>
 
-
                             <p class="upload-title">
                                 Unggah file CSV
                             </p>
-
 
                             <p class="upload-text">
                                 Pilih file data historis saham
                                 dari komputer Anda.
                             </p>
-
 
                             <input
                                 type="file"
@@ -154,7 +136,6 @@
                             />
 
                         </div>
-
 
                         <ul class="upload-rules">
 
@@ -175,13 +156,11 @@
 
                         </ul>
 
-
                         <p
                             id="file-hint"
                             class="file-hint"
                             aria-live="polite"
                         ></p>
-
 
                         <p
                             id="csv-error"
@@ -190,8 +169,6 @@
                             hidden
                         ></p>
 
-
-                        <!-- DOWNLOAD TEMPLATE -->
                         <div class="template-download">
 
                             <p class="text-muted text-small">
@@ -214,10 +191,6 @@
 
                     </div>
 
-
-                    <!-- ==================================
-                         3. HORIZON PREDIKSI
-                    =================================== -->
                     <div class="field">
 
                         <label for="horizon">
@@ -231,19 +204,19 @@
                             required
                         >
 
-                            <option value="" selected disabled>
+                            <option value="" disabled{% if not selected_horizon %} selected{% endif %}>
                                 Pilih jumlah hari
                             </option>
 
-                            <option value="1">
+                            <option value="1"{% if selected_horizon == 1 %} selected{% endif %}>
                                 1 hari ke depan
                             </option>
 
-                            <option value="5">
+                            <option value="5"{% if selected_horizon == 5 %} selected{% endif %}>
                                 5 hari ke depan
                             </option>
 
-                            <option value="10">
+                            <option value="10"{% if selected_horizon == 10 %} selected{% endif %}>
                                 10 hari ke depan
                             </option>
 
@@ -258,10 +231,6 @@
 
                 </div>
 
-
-                <!-- ==================================
-                     SUBMIT BUTTON
-                =================================== -->
                 <button
                     type="submit"
                     class="btn btn-block"
@@ -278,8 +247,6 @@
                         attrs='data-icon="inline-end" data-arrow'
                     ) }}
 
-
-                    <!-- LOADING SPINNER -->
                     <svg
                         data-spinner
                         hidden
@@ -308,15 +275,8 @@
 
     </div>
 
-
-
-    <!-- ==========================================
-         SIDEBAR
-    =========================================== -->
     <aside class="sidebar">
 
-
-        <!-- INFORMASI MODEL -->
         <div class="card" data-size="sm">
 
             <header>
@@ -324,7 +284,6 @@
                 <h2>Informasi Model</h2>
 
             </header>
-
 
             <section>
 
@@ -344,9 +303,6 @@
 
         </div>
 
-
-
-        <!-- PETUNJUK PENGGUNAAN -->
         <div class="card" data-size="sm">
 
             <header>
@@ -354,7 +310,6 @@
                 <h2>Petunjuk Penggunaan</h2>
 
             </header>
-
 
             <section>
 
@@ -387,8 +342,6 @@
 
 </div>
 
-
-<!-- POPUP: DATA KURANG DARI 30 BARIS -->
 <dialog id="csv-row-dialog" class="csv-dialog">
     <div class="csv-dialog__inner">
 

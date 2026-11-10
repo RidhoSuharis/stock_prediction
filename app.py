@@ -3,9 +3,6 @@ from flask import Flask, render_template
 from routes.main_routes import main_bp
 from routes.prediction_routes import prediction_bp
 
-# Aset statis disimpan di `public/static` agar dapat disajikan langsung oleh
-# Vercel dari CDN, sementara Flask tetap menyajikannya pada path `/static/*`
-# ketika dijalankan lokal.
 app = Flask(__name__, static_folder="public/static")
 app.register_blueprint(main_bp)
 app.register_blueprint(prediction_bp)

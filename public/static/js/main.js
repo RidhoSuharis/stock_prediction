@@ -1,4 +1,3 @@
-/* StockPredict — interaksi form prediksi (vanilla JS, tanpa library). */
 document.addEventListener('DOMContentLoaded', () => {
   const form       = document.getElementById('prediction-form');
   const fileInput  = document.getElementById('csv_file');
@@ -11,11 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn  = form ? form.querySelector('[type="submit"]') : null;
   const maxSize    = 5 * 1024 * 1024;
 
-  let csvRowCount = null; // null = belum dicek, angka = jumlah baris data
+  let csvRowCount = null;
 
-  /* ------------------------------------------------------------------ */
-  /* Helpers: state invalid field                                         */
-  /* ------------------------------------------------------------------ */
   const setInvalid = (invalid) => {
     if (!csvField || !fileInput) return;
     if (invalid) {
@@ -41,9 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setInvalid(false);
   };
 
-  /* ------------------------------------------------------------------ */
-  /* Helpers: validasi field wajib                                        */
-  /* ------------------------------------------------------------------ */
   const requiredMessages = {
     stock: 'Silakan pilih kode saham.',
     csv_file: 'Silakan unggah file CSV.',
@@ -103,9 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ------------------------------------------------------------------ */
-  /* Helpers: state tombol submit                                         */
-  /* ------------------------------------------------------------------ */
   const setButtonState = (state) => {
     if (!submitBtn) return;
     const label   = submitBtn.querySelector('[data-label]');
@@ -130,20 +120,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  /* ------------------------------------------------------------------ */
-  /* Helpers: hitung baris data dalam CSV                                */
-  /* ------------------------------------------------------------------ */
   const countCsvDataRows = (text) => {
     const lines = text.split(/\r?\n/).filter((l) => l.trim() !== '');
     let skip = 0;
     if (lines.length > 0 && lines[0].trim().toLowerCase().startsWith('sep=')) skip++;
-    skip++; // lewati header
+    skip++;
     return Math.max(0, lines.length - skip);
   };
 
-  /* ------------------------------------------------------------------ */
-  /* File input: validasi & baca row count                               */
-  /* ------------------------------------------------------------------ */
   if (fileInput) {
     fileInput.addEventListener('change', () => {
       const file = fileInput.files[0];
@@ -170,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Baca isi file untuk hitung baris data
       setButtonState('loading-file');
       const reader = new FileReader();
 
@@ -193,9 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ------------------------------------------------------------------ */
-  /* Dialog: tutup dengan tombol atau klik backdrop                      */
-  /* ------------------------------------------------------------------ */
   if (dialogClose && dialog) {
     dialogClose.addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (e) => {
@@ -203,9 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ------------------------------------------------------------------ */
-  /* Form submit: cek row count, lalu kirim atau tampilkan popup         */
-  /* ------------------------------------------------------------------ */
   if (form) {
     form.addEventListener('submit', (event) => {
       if (submitBtn && submitBtn.disabled) {
@@ -220,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Blok submit jika data kurang dari 30 baris
       if (csvRowCount !== null && csvRowCount < 30) {
         event.preventDefault();
         if (dialog && rowCountEl) {
