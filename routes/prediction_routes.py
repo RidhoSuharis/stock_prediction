@@ -8,9 +8,7 @@ from services.services_prediction.prediction_registry import (
     STOCK_SERVICES
 )
 
-
 prediction_bp = Blueprint('prediction', __name__)
-
 
 def render_prediction_error(message, status, stock=None, horizon=None):
     return render_template(
@@ -20,26 +18,16 @@ def render_prediction_error(message, status, stock=None, horizon=None):
         selected_horizon=horizon
     ), status
 
-
 @prediction_bp.route('/proses-prediksi', methods=['GET'])
 def redirect_prediction():
     return redirect(url_for('prediction'))
 
-
 @prediction_bp.route('/proses-prediksi', methods=['POST'])
 def process_prediction():
-
-    # =====================================
-    # 1. MENGAMBIL INPUT PENGGUNA
-    # =====================================
 
     stock = request.form.get('stock')
     csv_file = request.files.get('csv_file')
     horizon = request.form.get('horizon')
-
-    # =====================================
-    # 2. VALIDASI PILIHAN SAHAM
-    # =====================================
 
     stock_service = STOCK_SERVICES.get(stock)
 
@@ -49,10 +37,6 @@ def process_prediction():
             400,
             stock=stock
         )
-
-    # =====================================
-    # 3. VALIDASI HORIZON
-    # =====================================
 
     try:
         horizon = int(horizon)
@@ -75,10 +59,6 @@ def process_prediction():
             horizon=horizon
         )
 
-    # =====================================
-    # 4. VALIDASI DATA CSV
-    # =====================================
-
     df, error = validate_prediction_data(csv_file)
 
     if error:
@@ -91,17 +71,9 @@ def process_prediction():
 
     try:
 
-        # =====================================
-        # 5. MEMUAT MODEL DAN SCALER
-        # =====================================
-
         model, scaler, metadata = (
             stock_service["loader"]()
         )
-
-        # =====================================
-        # 6. PREPROCESSING DATA
-        # =====================================
 
         X_input = stock_service["preprocessor"](
             df,
@@ -109,19 +81,10 @@ def process_prediction():
             metadata["window_size"]
         )
 
-        # =====================================
-        # 7. MELAKUKAN PREDIKSI
-        # =====================================
-
         predictions = predictor(model, scaler, X_input)
 
-        # Menyeragamkan hasil prediksi menjadi list
         if not isinstance(predictions, list):
             predictions = [predictions]
-
-        # =====================================
-        # 8. MENYIAPKAN INFORMASI HASIL
-        # =====================================
 
         last_date = df["Date"].iloc[-1]
 
@@ -129,17 +92,9 @@ def process_prediction():
             df["Close"].iloc[-1]
         )
 
-        # =====================================
-        # MENYIAPKAN DATA HISTORIS UNTUK GRAFIK
-        # =====================================
-
         historical_dates = df["Date"].dt.strftime("%Y-%m-%d").tolist()
 
         historical_prices = df["Close"].astype(float).tolist()
-
-        # =====================================
-        # 9. MENAMPILKAN HASIL
-        # =====================================
 
         return render_template(
             "result.html",
@@ -157,7 +112,7 @@ def process_prediction():
             horizon=horizon,
 
             historical_dates=historical_dates,
-            
+
             historical_prices=historical_prices,
 
             predictions=predictions

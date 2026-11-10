@@ -1,10 +1,5 @@
-{#-
-  Macro bersama untuk komponen proyek.
--#}
 {% from "components/icon.html" import icon %}
 
-
-{#- Tampilkan flash message Flask sebagai Basecoat alert. -#}
 {% macro flash_messages() -%}
   {%- with messages = get_flashed_messages(with_categories=true) -%}
     {%- if messages -%}
@@ -23,14 +18,10 @@
   {%- endwith -%}
 {%- endmacro %}
 
-
-{#- Badge Basecoat. variant: primary (default), secondary, destructive, outline. -#}
 {% macro badge(text, variant=None) -%}
   <span class="badge"{% if variant and variant != 'primary' %} data-variant="{{ variant }}"{% endif %}>{{ text }}</span>
 {%- endmacro %}
 
-
-{#- Baris label/nilai untuk kartu informasi. -#}
 {% macro info_row(label, value) -%}
   <div class="info-row">
     <span class="info-row__label">{{ label }}</span>

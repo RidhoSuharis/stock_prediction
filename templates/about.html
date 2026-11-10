@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% from "components/icon.html" import icon %}
 {% from "components/macros.html" import badge %}
@@ -7,9 +6,6 @@
 
 {% block content %}
 
-<!-- ==========================================
-     HERO SECTION
-=========================================== -->
 <section class="page-hero">
 
     {{ badge('TENTANG APLIKASI') }}
@@ -24,13 +20,8 @@
 
 </section>
 
-
 <div class="page-stack">
 
-
-    <!-- ==========================================
-         TUJUAN APLIKASI
-    =========================================== -->
     <div class="card">
 
         <section>
@@ -48,10 +39,6 @@
 
     </div>
 
-
-    <!-- ==========================================
-         METODE
-    =========================================== -->
     <div class="card">
 
         <section>
@@ -87,10 +74,6 @@
 
     </div>
 
-
-    <!-- ==========================================
-         DATA DAN VARIABEL
-    =========================================== -->
     <div class="card">
 
         <section>
@@ -104,8 +87,6 @@
 
             <div class="grid-3">
 
-
-                <!-- FORMAT CSV -->
                 <div class="card data-card" data-size="sm">
 
                     <section>
@@ -125,8 +106,6 @@
 
                 </div>
 
-
-                <!-- CLOSE -->
                 <div class="card data-card" data-size="sm">
 
                     <section>
@@ -146,8 +125,6 @@
 
                 </div>
 
-
-                <!-- PILIHAN SAHAM -->
                 <div class="card data-card" data-size="sm">
 
                     <section>
@@ -172,10 +149,6 @@
 
     </div>
 
-
-    <!-- ==========================================
-         ALUR PENGGUNAAN APLIKASI
-    =========================================== -->
     <div class="card">
 
         <section>
@@ -184,8 +157,6 @@
 
             <ol class="steps">
 
-
-                <!-- STEP 1 -->
                 <li class="step">
 
                     {{ badge('1', 'secondary') }}
@@ -203,8 +174,6 @@
 
                 </li>
 
-
-                <!-- STEP 2 -->
                 <li class="step">
 
                     {{ badge('2', 'secondary') }}
@@ -222,8 +191,6 @@
 
                 </li>
 
-
-                <!-- STEP 3 -->
                 <li class="step">
 
                     {{ badge('3', 'secondary') }}
@@ -241,8 +208,6 @@
 
                 </li>
 
-
-                <!-- STEP 4 -->
                 <li class="step">
 
                     {{ badge('4', 'secondary') }}
@@ -266,10 +231,6 @@
 
     </div>
 
-
-    <!-- ==========================================
-         BATASAN APLIKASI
-    =========================================== -->
     <div class="alert">
 
         {{ icon('triangle-alert', 20) }}
@@ -289,10 +250,6 @@
 
     </div>
 
-
-    <!-- ==========================================
-         CALL TO ACTION
-    =========================================== -->
     <div class="card cta-card">
 
         <section class="cta-inner">
@@ -307,7 +264,6 @@
                 </p>
 
             </div>
-
 
             <a href="{{ url_for('prediction') }}"
                class="btn"
@@ -326,7 +282,6 @@
         </section>
 
     </div>
-
 
 </div>
 
