@@ -88,27 +88,27 @@
                             required
                         >
 
-                            <option value="" selected disabled>
+                            <option value="" disabled{% if not selected_stock %} selected{% endif %}>
                                 Pilih kode saham
                             </option>
 
-                            <option value="ANTM">
+                            <option value="ANTM"{% if selected_stock == 'ANTM' %} selected{% endif %}>
                                 ANTM — Aneka Tambang
                             </option>
 
-                            <option value="BBCA">
+                            <option value="BBCA"{% if selected_stock == 'BBCA' %} selected{% endif %}>
                                 BBCA — Bank Central Asia
                             </option>
 
-                            <option value="BBRI">
+                            <option value="BBRI"{% if selected_stock == 'BBRI' %} selected{% endif %}>
                                 BBRI — Bank Rakyat Indonesia
                             </option>
 
-                            <option value="BMRI">
+                            <option value="BMRI"{% if selected_stock == 'BMRI' %} selected{% endif %}>
                                 BMRI — Bank Mandiri
                             </option>
 
-                            <option value="TLKM">
+                            <option value="TLKM"{% if selected_stock == 'TLKM' %} selected{% endif %}>
                                 TLKM — Telkom Indonesia
                             </option>
 
@@ -240,19 +240,19 @@
                             required
                         >
 
-                            <option value="" selected disabled>
+                            <option value="" disabled{% if not selected_horizon %} selected{% endif %}>
                                 Pilih jumlah hari
                             </option>
 
-                            <option value="1">
+                            <option value="1"{% if selected_horizon == 1 %} selected{% endif %}>
                                 1 hari ke depan
                             </option>
 
-                            <option value="5">
+                            <option value="5"{% if selected_horizon == 5 %} selected{% endif %}>
                                 5 hari ke depan
                             </option>
 
-                            <option value="10">
+                            <option value="10"{% if selected_horizon == 10 %} selected{% endif %}>
                                 10 hari ke depan
                             </option>
 
