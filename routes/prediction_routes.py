@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, current_app, request, render_template, redirect, url_for
 
 from services.services_upl.stock_data_upl import (
     validate_prediction_data
@@ -119,12 +119,6 @@ def process_prediction():
         if not isinstance(predictions, list):
             predictions = [predictions]
 
-        predicted_price = predictor(
-            model,
-            scaler,
-            X_input
-        )
-
         # =====================================
         # 8. MENYIAPKAN INFORMASI HASIL
         # =====================================
@@ -169,9 +163,9 @@ def process_prediction():
             predictions=predictions
         )
 
-    except Exception as e:
+    except Exception:
 
-        print(f"Error prediksi {stock}: {e}")
+        current_app.logger.exception("Error prediksi %s", stock)
 
         return render_prediction_error(
             "Terjadi kesalahan saat melakukan prediksi. "
