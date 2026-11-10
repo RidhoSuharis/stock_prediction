@@ -1,11 +1,3 @@
-/* ==========================================================================
-   StockPredict — layout & komponen proyek
-   Dimuat setelah Basecoat + theme.css. Semua layout/responsive ditulis manual.
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   1. Reset & base
-   -------------------------------------------------------------------------- */
 *,
 *::before,
 *::after {
@@ -86,7 +78,6 @@ svg {
   text-decoration: none;
 }
 
-/* Tombol berbasis <a> mengikuti warna teks komponennya. */
 a.btn {
   color: var(--primary-foreground);
 }
@@ -97,7 +88,6 @@ a.btn[data-variant="ghost"] {
   color: var(--foreground);
 }
 
-/* Judul di dalam komponen Basecoat mengikuti ukuran komponen, bukan h2 global. */
 .card > header :is(h2, h3) {
   font-size: 1rem;
   font-weight: 600;
@@ -124,9 +114,6 @@ a.btn[data-variant="ghost"] {
   margin: 0;
 }
 
-/* --------------------------------------------------------------------------
-   2. Layout
-   -------------------------------------------------------------------------- */
 .container {
   width: 100%;
   max-width: 1120px;
@@ -219,9 +206,6 @@ a.btn[data-variant="ghost"] {
   color: var(--foreground);
 }
 
-/* --------------------------------------------------------------------------
-   3. Utility kecil
-   -------------------------------------------------------------------------- */
 .text-muted {
   color: var(--muted-foreground);
 }
@@ -332,11 +316,6 @@ a.btn[data-variant="ghost"] {
   margin-bottom: 24px;
 }
 
-/* --------------------------------------------------------------------------
-   4. Komponen halaman
-   -------------------------------------------------------------------------- */
-
-/* Hero ------------------------------------------------------------------- */
 .hero {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
@@ -429,7 +408,6 @@ a.btn[data-variant="ghost"] {
   font-size: 0.8rem;
 }
 
-/* Statistik & kartu fitur -------------------------------------------------- */
 .stat-card {
   background: var(--muted);
 }
@@ -469,7 +447,6 @@ a.btn[data-variant="ghost"] {
   color: var(--accent-foreground);
 }
 
-/* Metode ------------------------------------------------------------------ */
 .method-card {
   background: linear-gradient(135deg, var(--accent), var(--background) 70%);
 }
@@ -513,7 +490,6 @@ a.btn[data-variant="ghost"] {
   line-height: 1.15;
 }
 
-/* CTA --------------------------------------------------------------------- */
 .cta-card {
   background: var(--accent);
 }
@@ -535,7 +511,6 @@ a.btn[data-variant="ghost"] {
   color: var(--muted-foreground);
 }
 
-/* Form prediksi ----------------------------------------------------------- */
 .form-layout {
   display: grid;
   grid-template-columns: 1.6fr 1fr;
@@ -753,7 +728,6 @@ a.btn[data-variant="ghost"] {
   padding-left: 2px;
 }
 
-/* Hasil prediksi ---------------------------------------------------------- */
 .info-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -939,7 +913,6 @@ a.btn[data-variant="ghost"] {
   font-weight: 600;
 }
 
-/* Tentang ----------------------------------------------------------------- */
 .page-hero {
   padding: 40px;
   margin-bottom: 28px;
@@ -1046,7 +1019,6 @@ a.btn[data-variant="ghost"] {
   color: var(--muted-foreground);
 }
 
-/* Dialog popup ------------------------------------------------------------ */
 .csv-dialog {
   position: fixed;
   inset: 0;
@@ -1101,7 +1073,6 @@ a.btn[data-variant="ghost"] {
   margin-top: 8px;
 }
 
-/* Alert penyempurnaan ----------------------------------------------------- */
 .alert {
   border-color: var(--border);
 }
@@ -1111,9 +1082,6 @@ a.btn[data-variant="ghost"] {
   background: color-mix(in oklab, var(--destructive) 5%, var(--card));
 }
 
-/* --------------------------------------------------------------------------
-   5. Responsive
-   -------------------------------------------------------------------------- */
 @media (max-width: 1024px) {
   .hero {
     grid-template-columns: minmax(0, 1fr);
@@ -1207,9 +1175,6 @@ a.btn[data-variant="ghost"] {
   }
 }
 
-/* --------------------------------------------------------------------------
-   6. Aksesibilitas & motion
-   -------------------------------------------------------------------------- */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;

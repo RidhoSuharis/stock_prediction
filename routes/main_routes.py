@@ -5,7 +5,6 @@ from flask import Blueprint, send_file
 
 main_bp = Blueprint('main', __name__)
 
-
 @main_bp.route('/download-template')
 def download_template():
 
